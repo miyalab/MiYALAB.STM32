@@ -49,24 +49,24 @@ TimPwmMode::TimPwmMode(TIM_TypeDef *instance)
 {
     this->handler.Instance = instance;
     
-    if(instance == TIM1)      __HAL_RCC_TIM1_CLK_ENABLE();
-    else if(instance == TIM2) __HAL_RCC_TIM2_CLK_ENABLE();
-    else if(instance == TIM3) __HAL_RCC_TIM3_CLK_ENABLE();
-    else if(instance == TIM4) __HAL_RCC_TIM4_CLK_ENABLE();
-    else if(instance == TIM5) __HAL_RCC_TIM5_CLK_ENABLE();
-    else if(instance == TIM8) __HAL_RCC_TIM8_CLK_ENABLE();
+    if(instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
+    else if(instance == TIM2)  __HAL_RCC_TIM2_CLK_ENABLE();
+    else if(instance == TIM3)  __HAL_RCC_TIM3_CLK_ENABLE();
+    else if(instance == TIM4)  __HAL_RCC_TIM4_CLK_ENABLE();
+    else if(instance == TIM5)  __HAL_RCC_TIM5_CLK_ENABLE();
+    else if(instance == TIM8)  __HAL_RCC_TIM8_CLK_ENABLE();
     else if(instance == TIM12) __HAL_RCC_TIM12_CLK_ENABLE();
 }
 
 TimPwmMode::~TimPwmMode()
 {
     
-    if(this->handler.Instance == TIM1)      __HAL_RCC_TIM1_CLK_DISABLE();
-    else if(this->handler.Instance == TIM2) __HAL_RCC_TIM2_CLK_DISABLE();
-    else if(this->handler.Instance == TIM3) __HAL_RCC_TIM3_CLK_DISABLE();
-    else if(this->handler.Instance == TIM4) __HAL_RCC_TIM4_CLK_DISABLE();
-    else if(this->handler.Instance == TIM5) __HAL_RCC_TIM5_CLK_DISABLE();
-    else if(this->handler.Instance == TIM8) __HAL_RCC_TIM8_CLK_DISABLE();
+    if(this->handler.Instance == TIM1)       __HAL_RCC_TIM1_CLK_DISABLE();
+    else if(this->handler.Instance == TIM2)  __HAL_RCC_TIM2_CLK_DISABLE();
+    else if(this->handler.Instance == TIM3)  __HAL_RCC_TIM3_CLK_DISABLE();
+    else if(this->handler.Instance == TIM4)  __HAL_RCC_TIM4_CLK_DISABLE();
+    else if(this->handler.Instance == TIM5)  __HAL_RCC_TIM5_CLK_DISABLE();
+    else if(this->handler.Instance == TIM8)  __HAL_RCC_TIM8_CLK_DISABLE();
     else if(this->handler.Instance == TIM12) __HAL_RCC_TIM12_CLK_DISABLE();
 }
 
@@ -91,10 +91,10 @@ bool TimPwmMode::enable(uint16_t divide, uint16_t period, uint8_t use_channel)
 
 void TimPwmMode::pwmOut(uint8_t channel, uint16_t duty)
 {
-    if(channel == TIM::CHANNEL_1) this->handler.Instance->CCR1 = duty;
-    else if(channel == TIM::CHANNEL_2) this->handler.Instance->CCR2 = duty;
-    else if(channel == TIM::CHANNEL_3) this->handler.Instance->CCR3 = duty;
-    else this->handler.Instance->CCR4 = duty;
+    if(channel & TIM::CHANNEL_1) this->handler.Instance->CCR1 = duty;
+    if(channel & TIM::CHANNEL_2) this->handler.Instance->CCR2 = duty;
+    if(channel & TIM::CHANNEL_3) this->handler.Instance->CCR3 = duty;
+    if(channel & TIM::CHANNEL_4) this->handler.Instance->CCR4 = duty;
 }
 
 }
