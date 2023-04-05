@@ -80,7 +80,12 @@ bool TimPwmMode::enable(uint16_t divide, uint16_t period, uint8_t use_channel)
     if(use_channel & TIM::CHANNEL_2){
 
     }
+    if(use_channel & TIM::CHANNEL_3){
     
+    }
+    if(use_channel & TIM::CHANNEL_4){
+
+    }
     return ret;
 }
 
