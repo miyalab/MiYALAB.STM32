@@ -61,7 +61,7 @@ public:
 	TimPwmMode(TIM_TypeDef *instance);
 	virtual ~TimPwmMode();
 	bool enable(uint16_t divide, uint16_t period, uint8_t use_channel);
-	void output(uint8_t channel, uint16_t duty);
+	void pwmOut(uint8_t channel, uint16_t duty);
 private:
 	TIM_HandleTypeDef handler;
 };
