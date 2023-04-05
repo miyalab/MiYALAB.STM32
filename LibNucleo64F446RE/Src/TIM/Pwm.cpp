@@ -72,9 +72,15 @@ TimPwmMode::~TimPwmMode()
 
 bool TimPwmMode::enable(uint16_t divide, uint16_t period, uint8_t use_channel)
 {
-    bool ret;
+    bool ret = true;
     
     return ret;
+}
+
+void TimPwmMode::pwmOut(uint8_t channel, uint16_t duty)
+{
+    if(channel == TIM::CHANNEL_1) this->handler.Instance->CCR1 = duty;
+    
 }
 
 }
