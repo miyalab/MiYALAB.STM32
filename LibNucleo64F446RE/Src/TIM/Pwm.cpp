@@ -46,9 +46,8 @@
 namespace MiYALAB{
 namespace STM32{
 TimPwmMode::TimPwmMode(TIM_TypeDef *instance)
-{
-    this->handler.Instance = instance;
-    
+{    
+    // TIMクロック許可
     if(instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
     else if(instance == TIM2)  __HAL_RCC_TIM2_CLK_ENABLE();
     else if(instance == TIM3)  __HAL_RCC_TIM3_CLK_ENABLE();
@@ -56,11 +55,17 @@ TimPwmMode::TimPwmMode(TIM_TypeDef *instance)
     else if(instance == TIM5)  __HAL_RCC_TIM5_CLK_ENABLE();
     else if(instance == TIM8)  __HAL_RCC_TIM8_CLK_ENABLE();
     else if(instance == TIM12) __HAL_RCC_TIM12_CLK_ENABLE();
+
+    this->handler.Instance = instance;
 }
 
 TimPwmMode::~TimPwmMode()
 {
-    
+    // PWM停止
+    HAL_TIM_PWM_Stop(&this->handler, TIM_CHANNEL_ALL);
+    HAL_TIM_PWM_DeInit(&this->handler);
+
+    // TIMクロック不許可
     if(this->handler.Instance == TIM1)       __HAL_RCC_TIM1_CLK_DISABLE();
     else if(this->handler.Instance == TIM2)  __HAL_RCC_TIM2_CLK_DISABLE();
     else if(this->handler.Instance == TIM3)  __HAL_RCC_TIM3_CLK_DISABLE();
@@ -70,31 +75,175 @@ TimPwmMode::~TimPwmMode()
     else if(this->handler.Instance == TIM12) __HAL_RCC_TIM12_CLK_DISABLE();
 }
 
-bool TimPwmMode::enable(uint16_t divide, uint16_t period, uint8_t use_channel)
+bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
 {
     bool ret = true;
-    
-    if(use_channel & TIM::CHANNEL_1){
 
+    // TIMレジスタ設定
+    this->handler.Init.Prescaler = divide - 1;
+    this->handler.Init.CounterMode = TIM_COUNTERMODE_UP;
+    this->handler.Init.Period = period - 1;
+    this->handler.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    this->handler.Init.AutoReloadPreload = TIM_AUTOMATICOUTPUT_DISABLE;
+    if(HAL_TIM_PWM_Init(&this->handler) != HAL_OK) return false;
+    
+    // TIMマスタ設定
+    TIM_MasterConfigTypeDef master_config = {0};
+    master_config.MasterOutputTrigger = TIM_TRGO_RESET;
+    master_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    if(HAL_TIMEx_MasterConfigSynchronization(&this->handler, &master_config) != HAL_OK) return false;
+
+    // TIMブレーキデッドタイム設定
+    if(this->handler.Instance == TIM1 || this->handler.Instance == TIM8){
+        TIM_BreakDeadTimeConfigTypeDef break_dead_time_config = {0};
+        break_dead_time_config.OffStateRunMode = TIM_OSSR_DISABLE;
+        break_dead_time_config.OffStateIDLEMode = TIM_OSSI_DISABLE;
+        break_dead_time_config.LockLevel = TIM_LOCKLEVEL_OFF;
+        break_dead_time_config.DeadTime = 0;
+        break_dead_time_config.BreakState = TIM_BREAK_DISABLE;
+        break_dead_time_config.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+        break_dead_time_config.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+
+        // TIM ブレーキデッドタイム設定適用
+        if (HAL_TIMEx_ConfigBreakDeadTime(&this->handler, &break_dead_time_config) != HAL_OK) return HAL_ERROR;
+    }
+
+    // チャンネル設定
+    TIM_OC_InitTypeDef oc_config = {0};
+    oc_config.OCMode = TIM_OCMODE_PWM1;
+    oc_config.Pulse = 0;
+    oc_config.OCPolarity = TIM_OCPOLARITY_HIGH;
+    oc_config.OCFastMode = TIM_OCFAST_DISABLE;
+
+    // GPIO設定
+    GPIO_InitTypeDef gpio_config = {0};
+    gpio_config.Mode = GPIO_MODE_AF_PP;
+    gpio_config.Pull = GPIO_NOPULL;
+    gpio_config.Speed = GPIO_SPEED_FREQ_LOW;
+    gpio_config.Alternate = GPIO_AF1_TIM1;
+
+    // TIMチャンネル1設定
+    if(use_channel & TIM::CHANNEL_1){
+        if(this->handler.Instance == TIM1){
+            
+        }
+        if(this->handler.Instance == TIM2){
+
+        }
+        if(this->handler.Instance == TIM3){
+
+        }
+        if(this->handler.Instance == TIM4){
+
+        }
+        if(this->handler.Instance == TIM5){
+
+        }
+        if(this->handler.Instance == TIM8){
+
+        }
+        if(this->handler.Instance == TIM12){
+
+        }
+        if(HAL_TIM_PWM_ConfigChannel(&this->handler, &oc_config, TIM_CHANNEL_1) != HAL_OK) return false;
+        HAL_TIM_PWM_Start(&this->handler, TIM_CHANNEL_1);
     }
     if(use_channel & TIM::CHANNEL_2){
+        if(this->handler.Instance == TIM1){
+            
+        }
+        if(this->handler.Instance == TIM2){
 
+        }
+        if(this->handler.Instance == TIM3){
+
+        }
+        if(this->handler.Instance == TIM4){
+
+        }
+        if(this->handler.Instance == TIM5){
+
+        }
+        if(this->handler.Instance == TIM8){
+
+        }
+        if(this->handler.Instance == TIM12){
+
+        }
+        if(HAL_TIM_PWM_ConfigChannel(&this->handler, &oc_config, TIM_CHANNEL_2) != HAL_OK) return false;
+        HAL_TIM_PWM_Start(&this->handler, TIM_CHANNEL_2);
     }
     if(use_channel & TIM::CHANNEL_3){
-    
+
+        if(HAL_TIM_PWM_ConfigChannel(&this->handler, &oc_config, TIM_CHANNEL_3) != HAL_OK) return false;
+        HAL_TIM_PWM_Start(&this->handler, TIM_CHANNEL_3);
     }
     if(use_channel & TIM::CHANNEL_4){
+        if(this->handler.Instance == TIM1){
+            
+        }
+        if(this->handler.Instance == TIM2){
 
+        }
+        if(this->handler.Instance == TIM3){
+
+        }
+        if(this->handler.Instance == TIM4){
+
+        }
+        if(this->handler.Instance == TIM5){
+
+        }
+        if(this->handler.Instance == TIM8){
+
+        }
+        if(this->handler.Instance == TIM12){
+
+        }
+        if(HAL_TIM_PWM_ConfigChannel(&this->handler, &oc_config, TIM_CHANNEL_4) != HAL_OK) return false;
+        HAL_TIM_PWM_Start(&this->handler, TIM_CHANNEL_4);
     }
     return ret;
 }
 
-void TimPwmMode::pwmOut(uint8_t channel, uint16_t duty)
+void TimPwmMode::pwmOut(const uint8_t &channel, const uint16_t &duty)
 {
-    if(channel & TIM::CHANNEL_1) this->handler.Instance->CCR1 = duty;
-    if(channel & TIM::CHANNEL_2) this->handler.Instance->CCR2 = duty;
-    if(channel & TIM::CHANNEL_3) this->handler.Instance->CCR3 = duty;
-    if(channel & TIM::CHANNEL_4) this->handler.Instance->CCR4 = duty;
+    this->handler.Instance->CCR1 = duty * ( channel & TIM::CHANNEL_1);
+    this->handler.Instance->CCR2 = duty * ((channel & TIM::CHANNEL_2) >> 1);
+    this->handler.Instance->CCR3 = duty * ((channel & TIM::CHANNEL_3) >> 2);
+    this->handler.Instance->CCR4 = duty * ((channel & TIM::CHANNEL_4) >> 3);
+}
+
+bool TimPwmMode::initGpio(GPIO_InitTypeDef &gpio_config, const uint8_t &channel)
+{
+    bool ret = true;
+    GPIO_TypeDef *gpio;
+
+    if(this->handler.Instance == TIM1){
+        
+    }
+    else if(this->handler.Instance == TIM2){
+
+    }
+    else if(this->handler.Instance == TIM3){
+
+    }
+    else if(this->handler.Instance == TIM4){
+
+    }
+    else if(this->handler.Instance == TIM5){
+
+    }
+    else if(this->handler.Instance == TIM8){
+
+    }
+    else if(this->handler.Instance == TIM12){
+
+    }
+    else return false;
+
+    HAL_GPIO_Init(gpio, &gpio_config);
+    return ret;
 }
 
 }

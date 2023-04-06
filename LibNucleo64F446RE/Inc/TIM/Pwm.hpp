@@ -60,9 +60,11 @@ class TimPwmMode{
 public:
 	TimPwmMode(TIM_TypeDef *instance);
 	virtual ~TimPwmMode();
-	bool enable(uint16_t divide, uint16_t period, uint8_t use_channel);
-	void pwmOut(uint8_t channel, uint16_t duty);
+	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
+	void pwmOut(const uint8_t &channel, const uint16_t &duty);
 private:
+	bool initGpio(GPIO_InitTypeDef &gpio_config, const uint8_t &channel);
+
 	TIM_HandleTypeDef handler;
 };
 }
