@@ -27,14 +27,6 @@
  * Version : 1.00
  */
 
-#ifndef __MiYALAB_STM32_F446RE_TIM_HPP__
-#define __MiYALAB_STM32_F446RE_TIM_HPP__
-
-//--------------------------
-// TIM機能使用許可
-//--------------------------
-#define HAL_TIM_MODULE_ENABLED
-
 //--------------------------
 // include
 //--------------------------
@@ -77,8 +69,6 @@ TimPwmMode::~TimPwmMode()
 
 bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
 {
-    bool ret = true;
-
     // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;
     this->handler.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -107,7 +97,7 @@ bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const ui
     }
 
     // GPIO設定
-    if(!this->initGpio(use_channel)) return false;;
+    if(!this->initGpio(use_channel)) return false;
 
     // TIMチャンネル1設定
     TIM_OC_InitTypeDef oc_config = {0};
@@ -131,7 +121,7 @@ bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const ui
         if(HAL_TIM_PWM_ConfigChannel(&this->handler, &oc_config, TIM_CHANNEL_4) != HAL_OK) return false;
         HAL_TIM_PWM_Start(&this->handler, TIM_CHANNEL_4);
     }
-    return ret;
+    return true;
 }
 
 bool TimPwmMode::initGpio(const uint8_t &channel)
@@ -143,7 +133,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
 
     if(this->handler.Instance == TIM1){
         gpio_config.Alternate = GPIO_AF1_TIM1;
-        gpio_config.Pin  = GPIO_PIN_8  * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_8  *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_9  * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_10 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_11 * ((channel & TIM::CHANNEL_4) != 0);
@@ -170,7 +160,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     }
     else if(this->handler.Instance == TIM3){
         gpio_config.Alternate = GPIO_AF2_TIM3;
-        gpio_config.Pin  = GPIO_PIN_4 * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_4 *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_5 * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_0 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_1 * ((channel & TIM::CHANNEL_4) != 0);
@@ -181,7 +171,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     }
     else if(this->handler.Instance == TIM4){
         gpio_config.Alternate = GPIO_AF2_TIM4;
-        gpio_config.Pin  = GPIO_PIN_6 * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
@@ -192,7 +182,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     }
     else if(this->handler.Instance == TIM5){
         gpio_config.Alternate = GPIO_AF2_TIM5;
-        gpio_config.Pin  = GPIO_PIN_0 * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_0 *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_1 * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_2 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_3 * ((channel & TIM::CHANNEL_4) != 0);
@@ -203,7 +193,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     }
     else if(this->handler.Instance == TIM8){
         gpio_config.Alternate = GPIO_AF3_TIM8;
-        gpio_config.Pin  = GPIO_PIN_6 * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
@@ -214,7 +204,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     }
     else if(this->handler.Instance == TIM12){
         gpio_config.Alternate = GPIO_AF9_TIM12;
-        gpio_config.Pin  = GPIO_PIN_14 * ((channel & TIM::CHANNEL_1) != 0);
+        gpio_config.Pin  = GPIO_PIN_14 *  (channel & TIM::CHANNEL_1);
         gpio_config.Pin |= GPIO_PIN_15 * ((channel & TIM::CHANNEL_2) != 0);
         if(gpio_config.Pin){
             __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -227,8 +217,6 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
 
 }
 }
-
-#endif // __MiYALAB_STM32_F446RE_TIM_PWM_HPP__
 
 //------------------------------------------------------------------------------
 // end of file
