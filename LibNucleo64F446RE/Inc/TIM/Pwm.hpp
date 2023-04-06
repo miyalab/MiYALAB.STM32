@@ -61,11 +61,13 @@ public:
 	TimPwmMode(TIM_TypeDef *instance);
 	virtual ~TimPwmMode();
 	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
-	void pwmOut(const uint8_t &channel, const uint16_t &duty);
+	void pwmOut1(const uint16_t &duty) {this->handler.Instance->CCR1 = duty;}
+	void pwmOut2(const uint16_t &duty) {this->handler.Instance->CCR2 = duty;}
+	void pwmOut3(const uint16_t &duty) {this->handler.Instance->CCR3 = duty;}
+	void pwmOut4(const uint16_t &duty) {this->handler.Instance->CCR4 = duty;}
 private:
-	bool initGpio(GPIO_InitTypeDef &gpio_config, const uint8_t &channel);
-
 	TIM_HandleTypeDef handler;
+	bool initGpio(const uint8_t &channel);
 };
 }
 }
