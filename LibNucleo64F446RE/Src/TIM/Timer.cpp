@@ -33,6 +33,15 @@
 #include "TIM/Timer.hpp"
 
 //--------------------------
+// global values
+//--------------------------
+TIM_HandleTypeDef *handler6;
+TIM_HandleTypeDef *handler7;
+
+void (*interruptFunction6)(void);
+void (*interruptFunction7)(void);
+
+//--------------------------
 // method
 //--------------------------
 namespace MiYALAB{
@@ -40,9 +49,14 @@ namespace STM32{
 TimTimerMode::TimTimerMode(TIM_TypeDef *instance)
 {    
     // TIMクロック許可
-    if(instance == TIM6)       __HAL_RCC_TIM6_CLK_ENABLE();
-    else if(instance == TIM7)  __HAL_RCC_TIM7_CLK_ENABLE();
-
+    if(instance == TIM6){
+        __HAL_RCC_TIM6_CLK_ENABLE();
+        handler6 = &this->handler;
+    }
+    else if(instance == TIM7){
+        __HAL_RCC_TIM7_CLK_ENABLE();
+        handler7 = &this->handler;
+    }
     this->handler.Instance = instance;
 }
 
@@ -54,27 +68,53 @@ TimTimerMode::~TimTimerMode()
     if(this->handler.Instance == TIM6){
         HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn);
         __HAL_RCC_TIM6_CLK_DISABLE();
+        handler6 = nullptr;
     } 
     else if(this->handler.Instance == TIM7) {
 		HAL_NVIC_DisableIRQ(TIM7_IRQn);
         __HAL_RCC_TIM7_CLK_DISABLE();
+        handler7 = nullptr;
     }
 }
 
-bool TimTimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*fp)(void))
+bool TimTimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*function)(void))
 {
-    TIM_MasterConfigTypeDef master_config = {0};
-
+    // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;
     this->handler.Init.CounterMode = TIM_COUNTERMODE_UP;
     this->handler.Init.Period = period - 1;
     this->handler.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+    if(HAL_TIM_Base_Init(&this->handler) != HAL_OK) return false;
+
+    // TIMマスタ設定
+    TIM_MasterConfigTypeDef master_config = {0};
+    master_config.MasterOutputTrigger = TIM_TRGO_RESET;
+    master_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_ENABLE;
+    if(HAL_TIMEx_MasterConfigSynchronization(&this->handler, &master_config) != HAL_OK) return false;
+
+    // タイマー割り込み許可
+    if(this->handler.Instance == TIM6) interruptFunction6 = function;
+    else if(this->handler.Instance == TIM7) interruptFunction7 = function;
+    HAL_TIM_Base_Start_IT(&this->handler);
 }
 
+//--------------------------
+// interrupt handler
+//--------------------------
+void TIM6_DAC_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(handler6);
+    interruptFunction6();
+}
+
+void TIM7_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(handler7);
+	interruptFunction7();
+}
 
 }
 }
-
 
 //------------------------------------------------------------------------------
 // end of file
