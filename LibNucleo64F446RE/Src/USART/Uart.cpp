@@ -126,6 +126,8 @@ bool UartMode::enable(const uint32_t &baudrate, const uint32_t &length, const ui
     this->handler.Init.OverSampling = UART_OVERSAMPLING_16;
     if(HAL_UART_Init(&this->handler) != HAL_OK) return false;
 
+    if(gpioInit() == false) return false;
+
     return true;
 }
 
