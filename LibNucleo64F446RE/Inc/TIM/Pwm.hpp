@@ -24,7 +24,7 @@
  * File   : Pwm.hpp
  * Author : K.Miyauchi
  *
- * Version : 1.00
+ * Version : 2.00
  */
 
 #ifndef __MiYALAB_STM32_F446RE_TIM_PWM_HPP__
@@ -56,10 +56,11 @@ constexpr uint8_t CHANNEL_ALL = 0xff;
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-class TimPwmMode{
+namespace TIM{
+class PwmMode{
 public:
-	TimPwmMode(TIM_TypeDef *instance);
-	virtual ~TimPwmMode();
+	PwmMode(TIM_TypeDef *instance);
+	virtual ~PwmMode();
 	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
 	void pwmOut1(const uint16_t &duty) {this->handler.Instance->CCR1 = duty;}
 	void pwmOut2(const uint16_t &duty) {this->handler.Instance->CCR2 = duty;}
@@ -69,6 +70,7 @@ private:
 	TIM_HandleTypeDef handler;
 	bool initGpio(const uint8_t &channel);
 };
+}
 }
 }
 

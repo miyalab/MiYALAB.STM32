@@ -37,7 +37,8 @@
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-TimPwmMode::TimPwmMode(TIM_TypeDef *instance)
+namespace TIM{
+PwmMode::PwmMode(TIM_TypeDef *instance)
 {    
     // TIMクロック許可
     if(instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
@@ -51,7 +52,7 @@ TimPwmMode::TimPwmMode(TIM_TypeDef *instance)
     this->handler.Instance = instance;
 }
 
-TimPwmMode::~TimPwmMode()
+PwmMode::~PwmMode()
 {
     // PWM停止
     HAL_TIM_PWM_Stop(&this->handler, TIM_CHANNEL_ALL);
@@ -67,7 +68,7 @@ TimPwmMode::~TimPwmMode()
     else if(this->handler.Instance == TIM12) __HAL_RCC_TIM12_CLK_DISABLE();
 }
 
-bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
+bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
 {
     // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;
@@ -124,8 +125,9 @@ bool TimPwmMode::enable(const uint16_t &divide, const uint16_t &period, const ui
     return true;
 }
 
-bool TimPwmMode::initGpio(const uint8_t &channel)
+bool PwmMode::initGpio(const uint8_t &channel)
 {
+    // GPIO設定
     GPIO_InitTypeDef gpio_config = {0};
     gpio_config.Mode = GPIO_MODE_AF_PP;
     gpio_config.Pull = GPIO_NOPULL;
@@ -214,7 +216,7 @@ bool TimPwmMode::initGpio(const uint8_t &channel)
     else return false;
     return true;
 }
-
+}
 }
 }
 

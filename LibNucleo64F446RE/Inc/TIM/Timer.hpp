@@ -24,7 +24,7 @@
  * File   : Timer.hpp
  * Author : K.Miyauchi
  *
- * Version : 1.00
+ * Version : 2.00
  */
 
 #ifndef __MiYALAB_STM32_F446RE_TIM_TIMER_HPP__
@@ -49,15 +49,17 @@ extern "C" {
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-class TimTimerMode{
+namespace TIM{
+class TimerMode{
 public:
-	TimTimerMode(TIM_TypeDef *instance);
-	virtual ~TimTimerMode();
+	TimerMode(TIM_TypeDef *instance);
+	virtual ~TimerMode();
 	bool enable(const uint16_t &divide, const uint16_t &period, void(*function)(void));
 
 private:
 	TIM_HandleTypeDef handler;
 };
+}
 }
 }
 

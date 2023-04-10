@@ -35,8 +35,8 @@
 //--------------------------
 // global values
 //--------------------------
-TIM_HandleTypeDef *handler6;
-TIM_HandleTypeDef *handler7;
+TIM_HandleTypeDef *tim_handler6;
+TIM_HandleTypeDef *tim_handler7;
 
 void (*interruptFunction6)(void);
 void (*interruptFunction7)(void);
@@ -46,21 +46,22 @@ void (*interruptFunction7)(void);
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-TimTimerMode::TimTimerMode(TIM_TypeDef *instance)
+namespace TIM{
+TimerMode::TimerMode(TIM_TypeDef *instance)
 {    
     // TIMクロック許可
     if(instance == TIM6){
         __HAL_RCC_TIM6_CLK_ENABLE();
-        handler6 = &this->handler;
+        tim_handler6 = &this->handler;
     }
     else if(instance == TIM7){
         __HAL_RCC_TIM7_CLK_ENABLE();
-        handler7 = &this->handler;
+        tim_handler7 = &this->handler;
     }
     this->handler.Instance = instance;
 }
 
-TimTimerMode::~TimTimerMode()
+TimerMode::~TimerMode()
 {
     // TIMクロック不許可
     HAL_TIM_Base_Stop_IT(&this->handler);
@@ -68,16 +69,16 @@ TimTimerMode::~TimTimerMode()
     if(this->handler.Instance == TIM6){
         HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn);
         __HAL_RCC_TIM6_CLK_DISABLE();
-        handler6 = nullptr;
+        tim_handler6 = nullptr;
     } 
     else if(this->handler.Instance == TIM7) {
 		HAL_NVIC_DisableIRQ(TIM7_IRQn);
         __HAL_RCC_TIM7_CLK_DISABLE();
-        handler7 = nullptr;
+        tim_handler7 = nullptr;
     }
 }
 
-bool TimTimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*function)(void))
+bool TimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*function)(void))
 {
     // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;
@@ -96,6 +97,11 @@ bool TimTimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*
     if(this->handler.Instance == TIM6) interruptFunction6 = function;
     else if(this->handler.Instance == TIM7) interruptFunction7 = function;
     HAL_TIM_Base_Start_IT(&this->handler);
+
+    return true;
+}
+}
+}
 }
 
 //--------------------------
@@ -103,17 +109,14 @@ bool TimTimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*
 //--------------------------
 void TIM6_DAC_IRQHandler(void)
 {
-	HAL_TIM_IRQHandler(handler6);
+	HAL_TIM_IRQHandler(tim_handler6);
     interruptFunction6();
 }
 
 void TIM7_IRQHandler(void)
 {
-	HAL_TIM_IRQHandler(handler7);
+	HAL_TIM_IRQHandler(tim_handler7);
 	interruptFunction7();
-}
-
-}
 }
 
 //------------------------------------------------------------------------------
