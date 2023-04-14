@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="リソース &apos;LibNucleo64F446RE/Src/LibNucleo64F446RE.c&apos; を削除" deleteContents="false" description="リソース &apos;LibNucleo64F446RE/Src/LibNucleo64F446RE.c&apos; を削除" element1="/LibNucleo64F446RE/Src/LibNucleo64F446RE.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1680668711591"/>
+</session>
