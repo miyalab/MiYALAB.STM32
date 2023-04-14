@@ -27,13 +27,32 @@
  * Version : 2.00
  */
 
-#ifndef __MiYALAB_STM32_F446RE_TIM_PWM_HPP__
-#define __MiYALAB_STM32_F446RE_TIM_PWM_HPP__
+#ifndef __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
+#define __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
 
 //--------------------------
 // include
 //--------------------------
-#include "TIM/Common.hpp"
+#include "stm32f4xx.h"
+#include "stm32f4xx_hal_tim.h"
+
+//--------------------------
+// Symbols
+//--------------------------
+namespace MiYALAB{
+namespace STM32{
+namespace TIM{
+constexpr uint8_t CHANNEL_1 = 0x01;
+constexpr uint8_t CHANNEL_2 = 0x02;
+constexpr uint8_t CHANNEL_3 = 0x04;
+constexpr uint8_t CHANNEL_4 = 0x08;
+constexpr uint8_t CHANNEL_ALL = 0xff;
+
+constexpr uint32_t ENCODER_CENTER = (1 << 15) - 1;
+
+}
+}
+}
 
 //--------------------------
 // class
@@ -41,24 +60,18 @@
 namespace MiYALAB{
 namespace STM32{
 namespace TIM{
-class PwmMode: public TIM::Module{
+class Module{
 public:
-	PwmMode(TIM_TypeDef *instance);
-	virtual ~PwmMode();
-	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel) override;
-
-	void pwmOut1(const uint16_t &duty) {this->handler.Instance->CCR1 = duty;}
-	void pwmOut2(const uint16_t &duty) {this->handler.Instance->CCR2 = duty;}
-	void pwmOut3(const uint16_t &duty) {this->handler.Instance->CCR3 = duty;}
-	void pwmOut4(const uint16_t &duty) {this->handler.Instance->CCR4 = duty;}
-private:
-	bool initGpio(const uint8_t &channel) override;
+	virtual bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
+protected:
+	TIM_HandleTypeDef handler;
+	virtual bool initGpio(const uint8_t &channel);
 };
 }
 }
 }
 
-#endif // __MiYALAB_STM32_F446RE_TIM_PWM_HPP__
+#endif // __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
 
 //------------------------------------------------------------------------------
 // end of file

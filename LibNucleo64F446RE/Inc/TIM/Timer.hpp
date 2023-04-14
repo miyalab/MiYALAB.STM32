@@ -33,8 +33,7 @@
 //--------------------------
 // include
 //--------------------------
-#include "stm32f4xx.h"
-#include "stm32f4xx_hal_tim.h"
+#include "TIM/Common.hpp"
 
 //--------------------------
 // function prototype
@@ -50,14 +49,11 @@ extern "C" {
 namespace MiYALAB{
 namespace STM32{
 namespace TIM{
-class TimerMode{
+class TimerMode: public TIM::Module{
 public:
 	TimerMode(TIM_TypeDef *instance);
 	virtual ~TimerMode();
 	bool enable(const uint16_t &divide, const uint16_t &period, void(*function)(void));
-
-private:
-	TIM_HandleTypeDef handler;
 };
 }
 }
