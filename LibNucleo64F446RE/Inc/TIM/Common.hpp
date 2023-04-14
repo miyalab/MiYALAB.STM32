@@ -48,8 +48,8 @@ constexpr uint8_t CHANNEL_3 = 0x04;
 constexpr uint8_t CHANNEL_4 = 0x08;
 constexpr uint8_t CHANNEL_ALL = 0xff;
 
-constexpr uint32_t ENCODER_CENTER = (1 << 15) - 1;
-
+constexpr uint16_t ENCODER_CENTER = (1 << 15) - 1;
+constexpr uint16_t ENCODER_MAX = (1<<16) - 1;
 }
 }
 }
