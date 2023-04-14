@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * File   : Pwm.hpp
+ * File   : Encoder.hpp
  * Author : K.Miyauchi
  *
  * Version : 2.00

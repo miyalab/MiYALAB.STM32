@@ -222,12 +222,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
 {
     if(handler->Instance == USART1){
         recv_data1[(*recv_index1)++] = *recv1;
-        if(*recv_index1 == UART_RECV_BUFFSIZE) *recv_index1 = 0;
+        if(*recv_index1 == MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE) *recv_index1 = 0;
         HAL_UART_Receive_IT(handler, recv1, 1);
     }
     if(handler->Instance == USART2){
         recv_data2[(*recv_index2)++] = *recv1;
-        if(*recv_index2 == UART_RECV_BUFFSIZE) *recv_index2 = 0;
+        if(*recv_index2 == MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE) *recv_index2 = 0;
         HAL_UART_Receive_IT(handler, recv2, 1);
     }
     if(handler->Instance == USART3){

@@ -35,6 +35,7 @@
 //--------------------------
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal_uart.h"
+#include "USART/Serial.hpp"
 
 //--------------------------
 // function prototype
@@ -48,7 +49,6 @@ void UART5_IRQHandler();
 void USART6_IRQHandler();
 }
 
-constexpr uint16_t UART_RECV_BUFFSIZE = 128;
 
 //--------------------------
 // class
