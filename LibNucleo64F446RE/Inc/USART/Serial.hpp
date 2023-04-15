@@ -71,12 +71,12 @@ void stdioEnable(void(*_putchar)(uint8_t), bool(*_getchar)(uint8_t*), const bool
 }
 
 //--------------------------
-// class
+// enum
 //--------------------------
 namespace MiYALAB {	
 namespace STM32{
 namespace Serial{
-typedef enum {
+enum SerialMode{
     SERIAL_8N1 = 801,
     SERIAL_8N2,
     SERIAL_8E1 = 811,
@@ -89,7 +89,7 @@ typedef enum {
     SERIAL_9E2,
     SERIAL_9O1 = 921,
     SERIAL_9O2,
-} SerialMode;
+};
 }
 }
 }
