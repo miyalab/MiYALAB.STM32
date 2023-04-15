@@ -76,7 +76,7 @@ void stdioEnable(void(*_putchar)(uint8_t), bool(*_getchar)(uint8_t*), const bool
 namespace MiYALAB {	
 namespace STM32{
 namespace Serial{
-enum SerialMode{
+enum class SerialMode{
     SERIAL_8N1 = 801,
     SERIAL_8N2,
     SERIAL_8E1 = 811,
