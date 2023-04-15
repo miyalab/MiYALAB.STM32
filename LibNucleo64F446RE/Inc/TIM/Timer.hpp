@@ -39,8 +39,8 @@
 // function prototype
 //--------------------------
 extern "C" {
-	void TIM6_DAC_IRQHandler(void);
-	void TIM7_IRQHandler(void);
+void TIM6_DAC_IRQHandler(void);
+void TIM7_IRQHandler(void);
 }
 
 //--------------------------
