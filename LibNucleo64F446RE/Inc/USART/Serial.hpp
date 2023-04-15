@@ -27,13 +27,25 @@
  * Version : 1.00
  */
 
-#ifndef __MiYALAB_STM32_F446RE_USART_COMMON_HPP__
-#define __MiYALAB_STM32_F446RE_USART_COMMON_HPP__
+#ifndef __MiYALAB_STM32_F446RE_USART_SERIAL_HPP__
+#define __MiYALAB_STM32_F446RE_USART_SERIAL_HPP__
 
 //--------------------------
 // include
 //--------------------------
 #include <stdio.h>
+
+//--------------------------
+// Symbol
+//--------------------------
+namespace MiYALAB {	
+namespace STM32{
+namespace Serial{
+constexpr uint16_t SERIAL_RECV_BUFFSIZE = 128;
+constexpr uint16_t SERIAL_SEND_BUFFSIZE = 64;
+}
+}
+}
 
 //--------------------------
 // function prototype
@@ -50,16 +62,15 @@ int __io_getchar(void);
 #endif
 }
 
-//--------------------------
-// Symbol
-//--------------------------
-namespace MiYALAB {	
+namespace MiYALAB{
 namespace STM32{
 namespace Serial{
-constexpr uint16_t SERIAL_RECV_BUFFSIZE = 128;
+void stdioEnable(void(*putchar)(uint8_t), bool(*getchar)(uint8_t*), const bool &echo = false);
 }
 }
 }
+
+
 
 //--------------------------
 // class
