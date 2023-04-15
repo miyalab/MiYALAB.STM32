@@ -70,8 +70,6 @@ void stdioEnable(void(*_putchar)(uint8_t), bool(*_getchar)(uint8_t*), const bool
 }
 }
 
-
-
 //--------------------------
 // class
 //--------------------------
