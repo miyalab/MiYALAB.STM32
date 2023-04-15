@@ -68,7 +68,7 @@ int __io_getchar(void) {
 namespace MiYALAB{
 namespace STM32{
 namespace Serial{
-void stdioEnable(void(*_putchar)(uint8_t), bool(*_getchar)(uint8_t*), const bool &echo = false)
+void stdioEnable(void(*_putchar)(uint8_t), bool(*_getchar)(uint8_t*), const bool &echo)
 {
 	setbuf(stdout, NULL);
 	setbuf(stdin, NULL);
