@@ -38,9 +38,15 @@
 //--------------------------
 // global values
 //--------------------------
+namespace MiYALAB{
+namespace STM32{
+namespace USART{
 UART_HandleTypeDef *uart_handler1, *uart_handler2, *uart_handler3, *uart_handler4, *uart_handler5, *uart_handler6;
 uint8_t *recv_data1, *recv_data2, *recv_data3, *recv_data4, *recv_data5, *recv_data6; 
 int16_t *recv_index1, *recv_index2, *recv_index3, *recv_index4, *recv_index5, *recv_index6;
+}
+}
+}
 
 //--------------------------
 // method
@@ -48,6 +54,16 @@ int16_t *recv_index1, *recv_index2, *recv_index3, *recv_index4, *recv_index5, *r
 namespace MiYALAB{
 namespace STM32{
 namespace USART{
+/**
+ * @brief Construct a new Uart Mode:: Uart Mode object
+ * 
+ * @param instance  USART1(Tx:PA9 , Rx:PA10), 
+ *                  USART2(Tx:PA2 , Rx:PA3 ), 
+ *                  USART3(Tx:PC10, Rx:PC11), 
+ *                  UART4 (Tx:PA0 , Rx:PA1 ), 
+ *                  UART5 (Tx:PC12 ,Rx:PD2 ), 
+ *                  USART6(Tx:PC6 , Rx:PC7 )
+ */
 UartMode::UartMode(USART_TypeDef *instance)
 {
     this->recv_data = new uint8_t[Serial::SERIAL_RECV_BUFFSIZE];
@@ -104,6 +120,10 @@ UartMode::UartMode(USART_TypeDef *instance)
     this->handler.Instance = instance;
 }
 
+/**
+ * @brief Destroy the Uart Mode:: Uart Mode object
+ * 
+ */
 UartMode::~UartMode()
 {
     // UART停止
@@ -137,6 +157,16 @@ UartMode::~UartMode()
     }
 }
 
+/**
+ * @brief enable method
+ * 
+ * @param baudrate baudrate for uart
+ * @param length   data length for uart
+ * @param stopbits stopbits length for uart 
+ * @param parity   parity type for uart
+ * @return true 
+ * @return false 
+ */
 bool UartMode::enable(const uint32_t &baudrate, const uint32_t &length, const uint32_t &stopbits, const uint32_t parity)
 {
     // UART設定
@@ -154,6 +184,11 @@ bool UartMode::enable(const uint32_t &baudrate, const uint32_t &length, const ui
     return HAL_UART_Receive_IT(&this->handler, &this->recv_data[0], 1) == HAL_OK;
 }
 
+/**
+ * @brief uart available method
+ * 
+ * @return int16_t received data length 
+ */
 int16_t UartMode::available()
 {
     /** 以下のコードと同処理
@@ -163,6 +198,11 @@ int16_t UartMode::available()
     return (this->recv_index - this->read_index) + (this->recv_index < this->read_index) * Serial::SERIAL_RECV_BUFFSIZE;
 }
 
+/**
+ * @brief read method
+ * 
+ * @return int16_t received 1byte data
+ */
 int16_t UartMode::read()
 {
     if(this->recv_index == this->read_index) return -1;
@@ -171,12 +211,13 @@ int16_t UartMode::read()
     return ret;
 }
 
-template size_t UartMode::print<int8_t>(const int8_t&);
-template size_t UartMode::print<uint8_t>(const uint8_t&);
-template size_t UartMode::print<int16_t>(const int16_t&);
-template size_t UartMode::print<uint16_t>(const uint16_t&);
-template size_t UartMode::print<int>(const int&);
-template size_t UartMode::print<unsigned int>(const unsigned int&);
+/**
+ * @brief numeric type data transmit to computer by uart
+ * 
+ * @tparam T: numeric type
+ * @param data 
+ * @return size_t: transmitted data length
+ */
 template<typename T> size_t UartMode::print(const T &data)
 {
     char str[10] = "";
@@ -185,13 +226,11 @@ template<typename T> size_t UartMode::print(const T &data)
     this->transmit((uint8_t*)str, length);
     return length;
 }
-
 template<> size_t UartMode::print<char>(const char &data)
 {
     this->transmit((uint8_t*)&data, 1);
     return 1;
 }
-
 template<> size_t UartMode::print<int32_t>(const int32_t &data)
 {
     char str[10] = "";
@@ -200,7 +239,6 @@ template<> size_t UartMode::print<int32_t>(const int32_t &data)
     this->transmit((uint8_t*)str, length);
     return length;
 }
-
 template<> size_t UartMode::print<uint32_t>(const uint32_t &data)
 {
     char str[10] = "";
@@ -209,17 +247,43 @@ template<> size_t UartMode::print<uint32_t>(const uint32_t &data)
     this->transmit((uint8_t*)str, length);
     return length;
 }
+template size_t UartMode::print<int8_t>(const int8_t&);
+template size_t UartMode::print<uint8_t>(const uint8_t&);
+template size_t UartMode::print<int16_t>(const int16_t&);
+template size_t UartMode::print<uint16_t>(const uint16_t&);
+template size_t UartMode::print<int>(const int&);
+template size_t UartMode::print<unsigned int>(const unsigned int&);
 
-template size_t UartMode::print<char>(const char*);
-template size_t UartMode::print<unsigned char>(const unsigned char*);
-template size_t UartMode::print<int8_t>(const int8_t*);
+/**
+ * @brief string type data transmit to computer by uart
+ * 
+ * @tparam T: string type
+ * @param data 
+ * @return size_t: transmitted data length
+ */
 template<typename T> size_t UartMode::print(const T *data)
 {
     size_t length = strlen((char*)data);
     this->transmit((uint8_t*)data, length);
     return length;
 }
+template size_t UartMode::print<char>(const char*);
+template size_t UartMode::print<unsigned char>(const unsigned char*);
+template size_t UartMode::print<int8_t>(const int8_t*);
 
+/**
+ * @brief binary type data transmit to computer by uart
+ * 
+ * @tparam T: binary type
+ * @param data 
+ * @return size_t: transmitted data length
+ */
+template <typename T> size_t UartMode::write(const T &data)
+{
+    size_t length = sizeof(T);
+    this->transmit((uint8_t*)(&data), length);
+    return length;
+}
 template size_t UartMode::write<char>(const char &);
 template size_t UartMode::write<int8_t>(const int8_t &);
 template size_t UartMode::write<uint8_t>(const uint8_t &);
@@ -229,13 +293,13 @@ template size_t UartMode::write<int>(const int &);
 template size_t UartMode::write<unsigned int>(const unsigned int &);
 template size_t UartMode::write<int32_t>(const int32_t &);
 template size_t UartMode::write<uint32_t>(const uint32_t &);
-template <typename T> size_t UartMode::write(const T &data)
-{
-    size_t length = sizeof(T);
-    this->transmit((uint8_t*)(&data), length);
-    return length;
-}
 
+/**
+ * @brief Initialize gpio for uart.
+ * 
+ * @return true 
+ * @return false 
+ */
 bool UartMode::gpioInit()
 {
     GPIO_InitTypeDef gpio_config = {0};
@@ -293,17 +357,18 @@ bool UartMode::gpioInit()
 //--------------------------
 // interrupt handler
 //--------------------------
-void USART1_IRQHandler(void){HAL_UART_IRQHandler(uart_handler1);}
-void USART2_IRQHandler(void){HAL_UART_IRQHandler(uart_handler2);}
-void USART3_IRQHandler(void){HAL_UART_IRQHandler(uart_handler3);}
-void UART4_IRQHandler(void) {HAL_UART_IRQHandler(uart_handler4);}
-void UART5_IRQHandler(void) {HAL_UART_IRQHandler(uart_handler5);}
-void USART6_IRQHandler(void){HAL_UART_IRQHandler(uart_handler6);}
+void USART1_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler1);}
+void USART2_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler2);}
+void USART3_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler3);}
+void UART4_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler4);}
+void UART5_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler5);}
+void USART6_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler6);}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
 {
+    using namespace MiYALAB::STM32::USART;
     if(handler->Instance == USART1){
-        *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE; // 
+        *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE; // recv_indexを増加させたときにSERIAL_RECV_BUFFSIZE以上なら0にする
         HAL_UART_Receive_IT(handler, &recv_data1[*recv_index1], 1);
     }
     if(handler->Instance == USART2){

@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * File   : Common.hpp
+ * File   : Module.hpp
  * Author : K.Miyauchi
  *
  * Version : 2.00
  */
 
-#ifndef __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
-#define __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
+#ifndef __MiYALAB_STM32_F446RE_TIM_MODULE_HPP__
+#define __MiYALAB_STM32_F446RE_TIM_MODULE_HPP__
 
 //--------------------------
 // include
@@ -71,7 +71,7 @@ protected:
 }
 }
 
-#endif // __MiYALAB_STM32_F446RE_TIM_COMMON_HPP__
+#endif // __MiYALAB_STM32_F446RE_TIM_MODULE_HPP__
 
 //------------------------------------------------------------------------------
 // end of file
