@@ -177,8 +177,6 @@ template size_t UartMode::print<int16_t>(const int16_t&);
 template size_t UartMode::print<uint16_t>(const uint16_t&);
 template size_t UartMode::print<int>(const int&);
 template size_t UartMode::print<unsigned int>(const unsigned int&);
-template size_t UartMode::print<int32_t>(const int32_t&);
-template size_t UartMode::print<uint32_t>(const uint32_t&);
 template<typename T> size_t UartMode::print(const T &data)
 {
     char str[10] = "";
@@ -188,19 +186,33 @@ template<typename T> size_t UartMode::print(const T &data)
     return length;
 }
 
-// template<typename T>size_t UartMode::print(const T &data)
-// {
-//     char str[10] = "";
-//     sprintf(str, "%ld", data);
-//     size_t length = strlen(str);
-//     this->transmit((uint8_t*)str, length);
-//     return length;
-// }
+template<> size_t UartMode::print<char>(const char &data)
+{
+    this->transmit((uint8_t*)&data, 1);
+    return 1;
+}
+
+template<> size_t UartMode::print<int32_t>(const int32_t &data)
+{
+    char str[10] = "";
+    sprintf(str, "%ld", data);
+    size_t length = strlen(str);
+    this->transmit((uint8_t*)str, length);
+    return length;
+}
+
+template<> size_t UartMode::print<uint32_t>(const uint32_t &data)
+{
+    char str[10] = "";
+    sprintf(str, "%ld", data);
+    size_t length = strlen(str);
+    this->transmit((uint8_t*)str, length);
+    return length;
+}
 
 template size_t UartMode::print<char>(const char*);
 template size_t UartMode::print<unsigned char>(const unsigned char*);
 template size_t UartMode::print<int8_t>(const int8_t*);
-// template size_t UartMode::print<uint8_t>(const uint8_t*);
 template<typename T> size_t UartMode::print(const T *data)
 {
     size_t length = strlen((char*)data);
@@ -208,16 +220,20 @@ template<typename T> size_t UartMode::print(const T *data)
     return length;
 }
 
+template size_t UartMode::write<char>(const char &);
 template size_t UartMode::write<int8_t>(const int8_t &);
 template size_t UartMode::write<uint8_t>(const uint8_t &);
 template size_t UartMode::write<int16_t>(const int16_t &);
 template size_t UartMode::write<uint16_t>(const uint16_t &);
+template size_t UartMode::write<int>(const int &);
+template size_t UartMode::write<unsigned int>(const unsigned int &);
 template size_t UartMode::write<int32_t>(const int32_t &);
 template size_t UartMode::write<uint32_t>(const uint32_t &);
 template <typename T> size_t UartMode::write(const T &data)
 {
-    this->transmit((uint8_t*)(&data), sizeof(data));
-    return sizeof(data);
+    size_t length = sizeof(T);
+    this->transmit((uint8_t*)(&data), length);
+    return length;
 }
 
 bool UartMode::gpioInit()
@@ -287,7 +303,7 @@ void USART6_IRQHandler(void){HAL_UART_IRQHandler(uart_handler6);}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
 {
     if(handler->Instance == USART1){
-        *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
+        *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE; // 
         HAL_UART_Receive_IT(handler, &recv_data1[*recv_index1], 1);
     }
     if(handler->Instance == USART2){
