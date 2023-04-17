@@ -35,7 +35,6 @@
 //--------------------------
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal_uart.h"
-#include "USART/Serial.hpp"
 
 //--------------------------
 // function prototype
@@ -49,7 +48,6 @@ void UART5_IRQHandler();
 void USART6_IRQHandler();
 }
 
-
 //--------------------------
 // class
 //--------------------------
@@ -61,12 +59,21 @@ public:
 	UartMode(USART_TypeDef *instance);
 	virtual ~UartMode();
 	bool enable(const uint32_t &baudrate, const uint32_t &length, const uint32_t &stopbits, const uint32_t parity);
-    bool receive(uint8_t *c, const uint16_t &timeout = 0xff) {return (HAL_UART_Receive(&this->handler, c, 1, timeout)==HAL_OK);}
     bool receive(uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Receive(&this->handler, str, size, timeout)==HAL_OK);}
-    bool transmit(const uint8_t &c, const uint16_t &timeout = 0xff) {return (HAL_UART_Transmit(&this->handler, &c, 1, timeout)==HAL_OK);}
     bool transmit(const uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Transmit(&this->handler, str, size, timeout)==HAL_OK);}
+    int16_t available();
+    int16_t read();
+    size_t print(const int8_t &data);
+    size_t print(const int16_t &data);
+    size_t print(const int32_t &data);
+    template<typename T>size_t write(const T &data);
+    size_t println();
+
 private:
 	UART_HandleTypeDef handler;
+    int16_t recv_index;
+    int16_t read_index;
+    uint8_t *recv_data;
     bool gpioInit();
 };
 }

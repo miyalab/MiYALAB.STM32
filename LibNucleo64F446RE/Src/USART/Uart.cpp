@@ -30,15 +30,18 @@
 //--------------------------
 // include
 //--------------------------
+#include <stdlib.h>
+#include <string.h>
 #include "USART/Uart.hpp"
+#include "USART/Serial.hpp"
 
 //--------------------------
 // global values
 //--------------------------
 UART_HandleTypeDef *uart_handler1, *uart_handler2, *uart_handler3, *uart_handler4, *uart_handler5, *uart_handler6;
-uint8_t *recv1, *recv2, *recv3, *recv4, *recv5, *recv6;
+uint8_t recv1, recv2, recv3, recv4, recv5, recv6;
 uint8_t *recv_data1, *recv_data2, *recv_data3, *recv_data4, *recv_data5, *recv_data6; 
-uint16_t *recv_index1, *recv_index2, *recv_index3, *recv_index4, *recv_index5, *recv_index6;
+int16_t *recv_index1, *recv_index2, *recv_index3, *recv_index4, *recv_index5, *recv_index6;
 
 //--------------------------
 // method
@@ -48,36 +51,50 @@ namespace STM32{
 namespace USART{
 UartMode::UartMode(USART_TypeDef *instance)
 {
+    this->recv_data = new uint8_t[Serial::SERIAL_RECV_BUFFSIZE];
+
     // USARTクロック許可 / 送受信割込み許可
     if(instance == USART1){
         __HAL_RCC_USART1_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);
+        recv_data1 = this->recv_data;
+        recv_index1 = &this->recv_index;
     }
     else if(instance == USART2){
         __HAL_RCC_USART2_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART2_IRQn);
+        recv_data2 = this->recv_data;
+        recv_index2 = &this->recv_index;
     }
     else if(instance == USART3){
         __HAL_RCC_USART3_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART3_IRQn);
+        recv_data3 = this->recv_data;
+        recv_index3 = &this->recv_index;
     }
     else if(instance == UART4){
         __HAL_RCC_UART4_CLK_ENABLE();
 		HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(UART4_IRQn);
+        recv_data4 = this->recv_data;
+        recv_index4 = &this->recv_index;
     }
     else if(instance == UART5){
         __HAL_RCC_UART5_CLK_ENABLE();
 		HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(UART5_IRQn);
+        recv_data5 = this->recv_data;
+        recv_index5 = &this->recv_index;
     }
     else if(instance == USART6){
         __HAL_RCC_USART6_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART6_IRQn);
+        recv_data6 = this->recv_data;
+        recv_index6 = &this->recv_index;
     }
     this->handler.Instance = instance;
 }
@@ -86,6 +103,7 @@ UartMode::~UartMode()
 {
     // UART停止
     HAL_UART_DeInit(&this->handler);
+    delete (this->recv_data);
 
     // USARTクロック不許可 / 割り込み停止
     if(this->handler.Instance == USART1){
@@ -127,8 +145,58 @@ bool UartMode::enable(const uint32_t &baudrate, const uint32_t &length, const ui
     if(HAL_UART_Init(&this->handler) != HAL_OK) return false;
 
     if(gpioInit() == false) return false;
-
+    this->recv_index = this->read_index = 0;
     return true;
+}
+
+int16_t UartMode::available()
+{
+    /** 以下のコードと同処理
+     * if (this->recv_index > this->read_index) return this->recv_index - this->read_index;
+     * else return Serial::SERIAL_RECV_BUFFSIZE + this->recv_index - this->read_index;
+    */
+    return (this->recv_index - this->read_index) + (this->recv_index < this->read_index) * Serial::SERIAL_RECV_BUFFSIZE;
+}
+
+int16_t UartMode::read()
+{
+    if(this->recv_index == this->read_index) return -1;
+    uint8_t ret = recv_data[read_index++];
+    read_index = (read_index < Serial::SERIAL_RECV_BUFFSIZE) * read_index; // read_indexがRECV_BUFFSIZE以上なら0にする．
+    return ret;
+}
+
+size_t UartMode::print(const int8_t &data)
+{
+    char str[10] = "";
+    sprintf(str, "%d", data);
+    size_t length = strlen(str);
+    this->transmit((uint8_t*)str, length);
+    return length;
+}
+
+size_t UartMode::print(const int16_t &data)
+{
+    char str[10] = "";
+    sprintf(str, "%d", data);
+    size_t length = strlen(str);
+    this->transmit((uint8_t*)str, length);
+    return length;
+}
+
+size_t UartMode::print(const int32_t &data)
+{
+    char str[10] = "";
+    sprintf(str, "%ld", data);
+    size_t length = strlen(str);
+    this->transmit((uint8_t*)str, length);
+    return length;
+}
+
+template <typename T> size_t UartMode::write(const T &data)
+{
+    this->transmit((uint8_t*)(&data), sizeof(data));
+    return sizeof(data);
 }
 
 bool UartMode::gpioInit()
@@ -221,14 +289,14 @@ void USART6_IRQHandler(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
 {
     if(handler->Instance == USART1){
-        recv_data1[(*recv_index1)++] = *recv1;
+        recv_data1[(*recv_index1)++] = recv1;
         if(*recv_index1 == MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE) *recv_index1 = 0;
-        HAL_UART_Receive_IT(handler, recv1, 1);
+        HAL_UART_Receive_IT(handler, &recv1, 1);
     }
     if(handler->Instance == USART2){
-        recv_data2[(*recv_index2)++] = *recv1;
+        recv_data2[(*recv_index2)++] = recv2;
         if(*recv_index2 == MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE) *recv_index2 = 0;
-        HAL_UART_Receive_IT(handler, recv2, 1);
+        HAL_UART_Receive_IT(handler, &recv2, 1);
     }
     if(handler->Instance == USART3){
         

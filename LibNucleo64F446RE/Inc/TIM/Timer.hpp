@@ -33,7 +33,7 @@
 //--------------------------
 // include
 //--------------------------
-#include "TIM/Common.hpp"
+#include "TIM/Module.hpp"
 
 //--------------------------
 // function prototype
