@@ -47,6 +47,11 @@ void (*interruptFunction7)(void);
 namespace MiYALAB{
 namespace STM32{
 namespace TIM{
+/**
+ * @brief Construct a new Timer Mode:: Timer Mode object
+ * 
+ * @param instance TIM6, TIM7
+ */
 TimerMode::TimerMode(TIM_TypeDef *instance)
 {    
     // TIMクロック許可
@@ -61,6 +66,10 @@ TimerMode::TimerMode(TIM_TypeDef *instance)
     this->handler.Instance = instance;
 }
 
+/**
+ * @brief Destroy the Timer Mode:: Timer Mode object
+ * 
+ */
 TimerMode::~TimerMode()
 {
     // TIMクロック不許可

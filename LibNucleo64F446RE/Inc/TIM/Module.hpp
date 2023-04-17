@@ -63,6 +63,7 @@ namespace TIM{
 class Module{
 public:
 	virtual bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
+	virtual bool disable();
 protected:
 	TIM_HandleTypeDef handler;
 	virtual bool initGpio(const uint8_t &channel);

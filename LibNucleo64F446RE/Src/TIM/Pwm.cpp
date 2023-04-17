@@ -38,6 +38,17 @@
 namespace MiYALAB{
 namespace STM32{
 namespace TIM{
+/**
+ * @brief Construct a new Pwm Mode:: Pwm Mode object
+ * 
+ * @param instance: TIM1 (CH1-4: )
+ *                  TIM2 (CH1-4: )
+ *                  TIM3 (CH1-4: )
+ *                  TIM4 (CH1-4: )
+ *                  TIM5 (CH1-4: )
+ *                  TIM8 (CH1-4: )
+ *                  TIM12(CH1-4: )
+ */
 PwmMode::PwmMode(TIM_TypeDef *instance)
 {    
     // TIMクロック許可
@@ -52,6 +63,10 @@ PwmMode::PwmMode(TIM_TypeDef *instance)
     this->handler.Instance = instance;
 }
 
+/**
+ * @brief Destroy the Pwm Mode:: Pwm Mode object
+ * 
+ */
 PwmMode::~PwmMode()
 {
     // PWM停止
@@ -68,6 +83,15 @@ PwmMode::~PwmMode()
     else if(this->handler.Instance == TIM12) __HAL_RCC_TIM12_CLK_DISABLE();
 }
 
+/**
+ * @brief disable method
+ * 
+ * @param divide 
+ * @param period 
+ * @param use_channel 
+ * @return true 
+ * @return false 
+ */
 bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
 {
     // TIMレジスタ設定
@@ -125,6 +149,13 @@ bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8
     return true;
 }
 
+/**
+ * @brief initialize gpio port for tim pwm mode
+ * 
+ * @param channel 
+ * @return true 
+ * @return false 
+ */
 bool PwmMode::initGpio(const uint8_t &channel)
 {
     // GPIO設定
