@@ -47,11 +47,11 @@ namespace TIM{
  *                  TIM4 (CH1-4: )
  *                  TIM5 (CH1-4: )
  *                  TIM8 (CH1-4: )
- *                  TIM12(CH1-4: )
+ *                  TIM12(CH1-2: )
  */
 PwmMode::PwmMode(TIM_TypeDef *instance) : TIM::Module(instance)
 {
-    
+
 }
 
 /**

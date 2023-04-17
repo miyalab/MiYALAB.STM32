@@ -55,15 +55,8 @@ namespace TIM{
 TimerMode::TimerMode(TIM_TypeDef *instance) : TIM::Module(instance)
 {
     // TIMクロック許可
-    if(instance == TIM6){
-        __HAL_RCC_TIM6_CLK_ENABLE();
-        tim_handler6 = &this->handler;
-    }
-    else if(instance == TIM7){
-        __HAL_RCC_TIM7_CLK_ENABLE();
-        tim_handler7 = &this->handler;
-    }
-    this->handler.Instance = instance;
+    if(instance == TIM6)      tim_handler6 = &this->handler;
+    else if(instance == TIM7) tim_handler7 = &this->handler;
 }
 
 /**
@@ -77,12 +70,10 @@ TimerMode::~TimerMode()
     HAL_TIM_Base_DeInit(&this->handler);
     if(this->handler.Instance == TIM6){
         HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn);
-        __HAL_RCC_TIM6_CLK_DISABLE();
         tim_handler6 = nullptr;
     } 
     else if(this->handler.Instance == TIM7) {
 		HAL_NVIC_DisableIRQ(TIM7_IRQn);
-        __HAL_RCC_TIM7_CLK_DISABLE();
         tim_handler7 = nullptr;
     }
 }
