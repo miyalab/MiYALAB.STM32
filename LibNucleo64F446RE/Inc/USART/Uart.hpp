@@ -59,6 +59,7 @@ public:
 	UartMode(USART_TypeDef *instance);
 	virtual ~UartMode();
 	bool enable(const uint32_t &baudrate, const uint32_t &length = UART_WORDLENGTH_8B, const uint32_t &stopbits = UART_STOPBITS_1, const uint32_t parity = UART_PARITY_NONE);
+    bool disable(){return HAL_UART_DeInit(&this->handler) == HAL_OK;}
     int16_t available();
     int16_t read();
     template<typename T> size_t print(const T &data);
