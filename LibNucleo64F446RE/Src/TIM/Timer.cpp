@@ -52,8 +52,8 @@ namespace TIM{
  * 
  * @param instance TIM6, TIM7
  */
-TimerMode::TimerMode(TIM_TypeDef *instance)
-{    
+TimerMode::TimerMode(TIM_TypeDef *instance) : TIM::Module(instance)
+{
     // TIMクロック許可
     if(instance == TIM6){
         __HAL_RCC_TIM6_CLK_ENABLE();

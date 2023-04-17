@@ -62,6 +62,8 @@ namespace STM32{
 namespace TIM{
 class Module{
 public:
+	Module(TIM_TypeDef *instance);
+	virtual ~Module(){}
 	virtual bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
 	virtual bool disable();
 protected:
