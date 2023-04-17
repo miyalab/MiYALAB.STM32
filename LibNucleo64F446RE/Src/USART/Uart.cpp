@@ -187,7 +187,7 @@ bool UartMode::enable(const uint32_t &baudrate, const uint32_t &length, const ui
 /**
  * @brief uart available method
  * 
- * @return int16_t received data length 
+ * @return int16_t: received data length 
  */
 int16_t UartMode::available()
 {
@@ -201,7 +201,7 @@ int16_t UartMode::available()
 /**
  * @brief read method
  * 
- * @return int16_t received 1byte data
+ * @return int16_t: received 1 byte data
  */
 int16_t UartMode::read()
 {
@@ -347,6 +347,7 @@ bool UartMode::gpioInit()
         __HAL_RCC_GPIOC_CLK_ENABLE();
         HAL_GPIO_Init(GPIOC, &gpio_config);
     }
+    else return false;
 
     return true;
 }
