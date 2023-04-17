@@ -59,15 +59,13 @@ public:
 	UartMode(USART_TypeDef *instance);
 	virtual ~UartMode();
 	bool enable(const uint32_t &baudrate, const uint32_t &length, const uint32_t &stopbits, const uint32_t parity);
-    bool receive(uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Receive(&this->handler, str, size, timeout)==HAL_OK);}
-    bool transmit(const uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Transmit(&this->handler, str, size, timeout)==HAL_OK);}
     int16_t available();
     int16_t read();
-    size_t print(const int8_t &data);
-    size_t print(const int16_t &data);
-    size_t print(const int32_t &data);
-    template<typename T>size_t write(const T &data);
-    size_t println();
+    template<typename T> size_t print(const T &data);
+    template<typename T> size_t print(const T *data);
+    template<typename T> size_t write(const T &data);
+    template<typename T> size_t write(const T *data){return this->print(data);}
+    template<typename T> size_t println(const T data){size_t length = this->print(data); this->transmit((uint8_t*)"\n", 1); return length+1;}
 
 private:
 	UART_HandleTypeDef handler;
@@ -75,6 +73,8 @@ private:
     int16_t read_index;
     uint8_t *recv_data;
     bool gpioInit();
+    bool receive(uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Receive(&this->handler, str, size, timeout)==HAL_OK);}
+    bool transmit(const uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Transmit(&this->handler, str, size, timeout)==HAL_OK);}
 };
 }
 }
