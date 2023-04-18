@@ -41,8 +41,8 @@
 namespace MiYALAB {	
 namespace STM32{
 namespace Serial{
-constexpr uint16_t SERIAL_RECV_BUFFSIZE = 128;
-constexpr uint16_t SERIAL_SEND_BUFFSIZE = 64;
+constexpr uint16_t SERIAL_RECV_BUFF_SIZE = 128;
+constexpr uint16_t SERIAL_SEND_BUFF_SIZE = 64;
 }
 }
 }

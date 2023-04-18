@@ -3,7 +3,30 @@
         "stm32f4xx_hal.h": "c"
     },
     "cSpell.words": [
+        "AUTOMATICOUTPUT",
+        "BREAKPOLARITY",
+        "CLOCKDIVISION",
+        "GPIO",
+        "GPIOA",
+        "GPIOB",
+        "GPIOC",
+        "GPIOD",
+        "LOCKLEVEL",
+        "MASTERSLAVEMODE",
+        "OCFAST",
+        "OCMODE",
+        "OCPOLARITY",
+        "OSSI",
+        "OSSR",
         "stopbits",
+        "TRGO",
+        "NVIC",
+        "HWCONTROL",
+        "NOPULL",
+        "Prescaler",
+        "tparam",
+        "Cplt",
+        "WORDLENGTH",
         "USART"
     ]
 }

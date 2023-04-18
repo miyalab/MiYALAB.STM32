@@ -41,13 +41,13 @@ namespace TIM{
 /**
  * @brief Construct a new Pwm Mode:: Pwm Mode object
  * 
- * @param instance: TIM1 (CH1-4: )
- *                  TIM2 (CH1-4: )
- *                  TIM3 (CH1-4: )
- *                  TIM4 (CH1-4: )
- *                  TIM5 (CH1-4: )
- *                  TIM8 (CH1-4: )
- *                  TIM12(CH1-2: )
+ * @param instance: TIM1 (CH1-4: PA8,  PA9, PA10, PA11)
+ *                  TIM2 (CH1-4: PA5,  PB3, PB10, PB2)
+ *                  TIM3 (CH1-4: PB4,  PB5, PB0,  PB1)
+ *                  TIM4 (CH1-4: PB6,  PB7, PB8,  PB9)
+ *                  TIM5 (CH1-4: PA0,  PA1, PA2,  PA3)
+ *                  TIM8 (CH1-4: PC6,  PC7, PC8,  PC9)
+ *                  TIM12(CH1-2: PB14, PB15)
  */
 PwmMode::PwmMode(TIM_TypeDef *instance) : TIM::Module(instance)
 {
