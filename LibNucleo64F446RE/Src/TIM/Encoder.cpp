@@ -24,13 +24,13 @@
  * File   : Encoder.cpp
  * Author : K.Miyauchi
  *
- * Version : 1.00
+ * Version : 2.00
  */
 
 //--------------------------
 // include
 //--------------------------
-#include "TIM/Pwm.hpp"
+#include "TIM/Encoder.hpp"
 
 //--------------------------
 // method

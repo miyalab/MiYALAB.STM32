@@ -94,7 +94,7 @@ enum class SerialMode{
 }
 }
 
-#endif // __MiYALAB_STM32_F446RE_USART_COMMON_HPP__
+#endif // __MiYALAB_STM32_F446RE_USART_SERIAL_HPP__
 
 //------------------------------------------------------------------------------
 // end of file
