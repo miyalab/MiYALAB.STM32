@@ -372,23 +372,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
         *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE; // recv_indexを増加させたときにSERIAL_RECV_BUFFSIZE以上なら0にする
         HAL_UART_Receive_IT(handler, &recv_data1[*recv_index1], 1);
     }
-    if(handler->Instance == USART2){
+    else if(handler->Instance == USART2){
         *recv_index2 *= ++(*recv_index2) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
         HAL_UART_Receive_IT(handler, &recv_data2[*recv_index2], 1);
     }
-    if(handler->Instance == USART3){
+    else if(handler->Instance == USART3){
         *recv_index3 *= ++(*recv_index3) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
         HAL_UART_Receive_IT(handler, &recv_data3[*recv_index3], 1);
     }
-    if(handler->Instance == UART4){
+    else if(handler->Instance == UART4){
         *recv_index4 *= ++(*recv_index4) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
         HAL_UART_Receive_IT(handler, &recv_data4[*recv_index4], 1);
     }
-    if(handler->Instance == UART5){
+    else if(handler->Instance == UART5){
         *recv_index5 *= ++(*recv_index5) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
         HAL_UART_Receive_IT(handler, &recv_data5[*recv_index5], 1);
     }
-    if(handler->Instance == USART6){
+    else if(handler->Instance == USART6){
         *recv_index6 *= ++(*recv_index6) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFFSIZE;
         HAL_UART_Receive_IT(handler, &recv_data6[*recv_index6], 1);
     }
