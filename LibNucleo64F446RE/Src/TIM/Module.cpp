@@ -48,18 +48,18 @@ Module::Module(TIM_TypeDef *instance)
     this->handler.Instance = instance;
 
     // TIMクロック許可
-    if(instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
-    else if(instance == TIM2)  __HAL_RCC_TIM2_CLK_ENABLE();
-    else if(instance == TIM3)  __HAL_RCC_TIM3_CLK_ENABLE();
-    else if(instance == TIM4)  __HAL_RCC_TIM4_CLK_ENABLE();
-    else if(instance == TIM5)  __HAL_RCC_TIM5_CLK_ENABLE();
-    else if(instance == TIM6)  __HAL_RCC_TIM6_CLK_ENABLE();
-    else if(instance == TIM7)  __HAL_RCC_TIM7_CLK_ENABLE();
-    else if(instance == TIM8)  __HAL_RCC_TIM8_CLK_ENABLE();
-    else if(instance == TIM9)  __HAL_RCC_TIM9_CLK_ENABLE();
-    else if(instance == TIM10) __HAL_RCC_TIM10_CLK_ENABLE();
-    else if(instance == TIM11) __HAL_RCC_TIM11_CLK_ENABLE();
-    else if(instance == TIM12) __HAL_RCC_TIM12_CLK_ENABLE();
+    if(this->handler.Instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
+    else if(this->handler.Instance == TIM2)  __HAL_RCC_TIM2_CLK_ENABLE();
+    else if(this->handler.Instance == TIM3)  __HAL_RCC_TIM3_CLK_ENABLE();
+    else if(this->handler.Instance == TIM4)  __HAL_RCC_TIM4_CLK_ENABLE();
+    else if(this->handler.Instance == TIM5)  __HAL_RCC_TIM5_CLK_ENABLE();
+    else if(this->handler.Instance == TIM6)  __HAL_RCC_TIM6_CLK_ENABLE();
+    else if(this->handler.Instance == TIM7)  __HAL_RCC_TIM7_CLK_ENABLE();
+    else if(this->handler.Instance == TIM8)  __HAL_RCC_TIM8_CLK_ENABLE();
+    else if(this->handler.Instance == TIM9)  __HAL_RCC_TIM9_CLK_ENABLE();
+    else if(this->handler.Instance == TIM10) __HAL_RCC_TIM10_CLK_ENABLE();
+    else if(this->handler.Instance == TIM11) __HAL_RCC_TIM11_CLK_ENABLE();
+    else if(this->handler.Instance == TIM12) __HAL_RCC_TIM12_CLK_ENABLE();
 }
 
 /**
