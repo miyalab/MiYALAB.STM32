@@ -55,8 +55,16 @@ namespace TIM{
 TimerMode::TimerMode(TIM_TypeDef *instance) : TIM::Module(instance)
 {
     // TIMクロック許可
-    if(instance == TIM6)      tim_handler6 = &this->handler;
-    else if(instance == TIM7) tim_handler7 = &this->handler;
+    if(instance == TIM6){
+        HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+        tim_handler6 = &this->handler;
+    }
+    else if(instance == TIM7){
+        HAL_NVIC_SetPriority(TIM7_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(TIM7_IRQn);
+        tim_handler7 = &this->handler;
+    }
 }
 
 /**

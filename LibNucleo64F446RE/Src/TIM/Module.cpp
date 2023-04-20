@@ -45,6 +45,8 @@ namespace TIM{
  */
 Module::Module(TIM_TypeDef *instance)
 {    
+    this->handler.Instance = instance;
+
     // TIMクロック許可
     if(instance == TIM1)       __HAL_RCC_TIM1_CLK_ENABLE();
     else if(instance == TIM2)  __HAL_RCC_TIM2_CLK_ENABLE();
@@ -58,8 +60,6 @@ Module::Module(TIM_TypeDef *instance)
     else if(instance == TIM10) __HAL_RCC_TIM10_CLK_ENABLE();
     else if(instance == TIM11) __HAL_RCC_TIM11_CLK_ENABLE();
     else if(instance == TIM12) __HAL_RCC_TIM12_CLK_ENABLE();
-
-    this->handler.Instance = instance;
 }
 
 /**
