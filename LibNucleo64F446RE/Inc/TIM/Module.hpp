@@ -64,11 +64,11 @@ class Module{
 public:
 	Module(TIM_TypeDef *instance);
 	virtual ~Module();
-	virtual bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
-	virtual bool disable();
+	virtual bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel){return false;}
+	virtual bool disable(){return false;}
 protected:
 	TIM_HandleTypeDef handler;
-	virtual bool initGpio(const uint8_t &channel);
+	virtual bool initGpio(const uint8_t &channel){return false;}
 };
 }
 }
