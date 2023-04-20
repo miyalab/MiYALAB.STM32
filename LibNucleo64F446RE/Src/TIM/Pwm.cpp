@@ -61,8 +61,7 @@ PwmMode::PwmMode(TIM_TypeDef *instance) : TIM::Module(instance)
 PwmMode::~PwmMode()
 {
     // PWM停止
-    HAL_TIM_PWM_Stop(&this->handler, TIM_CHANNEL_ALL);
-    HAL_TIM_PWM_DeInit(&this->handler);
+    this->disable();
 }
 
 /**
