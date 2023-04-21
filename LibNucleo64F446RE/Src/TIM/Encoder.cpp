@@ -83,8 +83,31 @@ bool EncoderMode::enable(const uint16_t &divide, const uint16_t &period, const u
     this->handler.Init.RepetitionCounter = 0;
     this->handler.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
-    // TIM
+    // TIM エンコーダ設定
+    TIM_Encoder_InitTypeDef config = {0};
+    config.EncoderMode = (use_channel & TIM::CHANNEL_1) * TIM_ENCODERMODE_TI1 | (use_channel & TIM::CHANNEL_2) * TIM_ENCODERMODE_TI2;
+    config.IC1Polarity = TIM_ICPOLARITY_RISING;
+    config.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+    config.IC1Prescaler = TIM_ICPSC_DIV1;
+    config.IC1Filter = 0;
+    config.IC2Polarity = TIM_ICPOLARITY_RISING;
+    config.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+    config.IC2Prescaler = TIM_ICPSC_DIV1;
+    config.IC2Filter = 0;
+    if(HAL_TIM_Encoder_Init(&this->handler, &config) != HAL_OK) return false;
+
+    TIM_MasterConfigTypeDef master_config = {0};
+    master_config.MasterOutputTrigger = TIM_TRGO_RESET;
+    master_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    if(HAL_TIMEx_MasterConfigSynchronization(&this->handler, &master_config) != HAL_OK) return false;
+
+    // GPIO 設定
     if(this->initGpio(use_channel)) return false;
+    
+    // カウント開始
+    if(use_channel & TIM::CHANNEL_1) HAL_TIM_Encoder_Start(&this->handler, TIM_CHANNEL_1);
+    if(use_channel & TIM::CHANNEL_2) HAL_TIM_Encoder_Start(&this->handler, TIM_CHANNEL_2);
+    this->clear();
 
     return true;
 }
