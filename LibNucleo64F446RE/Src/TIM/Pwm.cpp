@@ -105,7 +105,7 @@ bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8
     // GPIO設定
     if(!this->initGpio(use_channel)) return false;
 
-    // TIMチャンネル1設定
+    // TIMチャンネル設定
     TIM_OC_InitTypeDef oc_config = {0};
     oc_config.OCMode = TIM_OCMODE_PWM1;
     oc_config.Pulse = 0;
