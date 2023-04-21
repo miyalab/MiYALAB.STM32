@@ -52,8 +52,6 @@ public:
 	void pwmOut2(const uint16_t &duty) {this->handler.Instance->CCR2 = duty;}
 	void pwmOut3(const uint16_t &duty) {this->handler.Instance->CCR3 = duty;}
 	void pwmOut4(const uint16_t &duty) {this->handler.Instance->CCR4 = duty;}
-private:
-	bool initGpio(const uint8_t &channel) override;
 };
 }
 }

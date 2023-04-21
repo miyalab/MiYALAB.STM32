@@ -50,8 +50,6 @@ public:
 
     void clear(){this->handler.Instance->CNT = TIM::ENCODER_CENTER;}
     int16_t count(){return this->handler.Instance->CNT - TIM::ENCODER_CENTER;}
-private:
-	bool initGpio(const uint8_t &channel) override;
 };
 }
 }
