@@ -41,9 +41,11 @@
 namespace MiYALAB{
 namespace STM32{
 namespace USART{
-UART_HandleTypeDef *uart_handler1, *uart_handler2, *uart_handler3, *uart_handler4, *uart_handler5, *uart_handler6;
-uint8_t *recv_data1, *recv_data2, *recv_data3, *recv_data4, *recv_data5, *recv_data6; 
-int16_t *recv_index1, *recv_index2, *recv_index3, *recv_index4, *recv_index5, *recv_index6;
+struct UartReceiveStruct{
+    UART_HandleTypeDef *handler;
+    uint8_t *data;
+    int16_t *index;
+} uart_recv[6];
 }
 }
 }
@@ -69,55 +71,47 @@ UartMode::UartMode(USART_TypeDef *instance)
     this->recv_data = new uint8_t[Serial::SERIAL_RECV_BUFF_SIZE];
 
     // USARTクロック許可 / 送受信割込み許可
+    int index;
     if(instance == USART1){
+        index = 0;
         __HAL_RCC_USART1_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART1_IRQn);
-		uart_handler1 = &this->handler;
-        recv_data1 = this->recv_data;
-        recv_index1 = &this->recv_index;
     }
     else if(instance == USART2){
+        index = 1;
         __HAL_RCC_USART2_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART2_IRQn);
-		uart_handler2 = &this->handler;
-        recv_data2 = this->recv_data;
-        recv_index2 = &this->recv_index;
     }
     else if(instance == USART3){
+        index = 2;        
         __HAL_RCC_USART3_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART3_IRQn);
-		uart_handler3 = &this->handler;
-        recv_data3 = this->recv_data;
-        recv_index3 = &this->recv_index;
     }
     else if(instance == UART4){
+        index = 3;
         __HAL_RCC_UART4_CLK_ENABLE();
 		HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(UART4_IRQn);
-		uart_handler4 = &this->handler;
-        recv_data4 = this->recv_data;
-        recv_index4 = &this->recv_index;
     }
     else if(instance == UART5){
+        index = 4;
         __HAL_RCC_UART5_CLK_ENABLE();
 		HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(UART5_IRQn);
-		uart_handler5 = &this->handler;
-        recv_data5 = this->recv_data;
-        recv_index5 = &this->recv_index;
     }
     else if(instance == USART6){
+        index = 5;
         __HAL_RCC_USART6_CLK_ENABLE();
 		HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART6_IRQn);
-		uart_handler6 = &this->handler;
-        recv_data6 = this->recv_data;
-        recv_index6 = &this->recv_index;
     }
     this->handler.Instance = instance;
+    uart_recv[index].handler = &this->handler;
+    uart_recv[index].index = &this->recv_index;
+    uart_recv[index].data = this->recv_data;
 }
 
 /**
@@ -348,7 +342,6 @@ bool UartMode::gpioInit()
         HAL_GPIO_Init(GPIOC, &gpio_config);
     }
     else return false;
-
     return true;
 }
 }
@@ -358,40 +351,25 @@ bool UartMode::gpioInit()
 //--------------------------
 // interrupt handler
 //--------------------------
-void USART1_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler1);}
-void USART2_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler2);}
-void USART3_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler3);}
-void UART4_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler4);}
-void UART5_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler5);}
-void USART6_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_handler6);}
+void USART1_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[0].handler);}
+void USART2_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[1].handler);}
+void USART3_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[2].handler);}
+void UART4_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[3].handler);}
+void UART5_IRQHandler(void) {HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[4].handler);}
+void USART6_IRQHandler(void){HAL_UART_IRQHandler(MiYALAB::STM32::USART::uart_recv[5].handler);}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handler)
 {
     using namespace MiYALAB::STM32::USART;
-    if(handler->Instance == USART1){
-        *recv_index1 *= ++(*recv_index1) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE; // recv_indexを増加させたときにSERIAL_RECV_BUFF_SIZE以上なら0にする
-        HAL_UART_Receive_IT(handler, &recv_data1[*recv_index1], 1);
-    }
-    else if(handler->Instance == USART2){
-        *recv_index2 *= ++(*recv_index2) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE;
-        HAL_UART_Receive_IT(handler, &recv_data2[*recv_index2], 1);
-    }
-    else if(handler->Instance == USART3){
-        *recv_index3 *= ++(*recv_index3) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE;
-        HAL_UART_Receive_IT(handler, &recv_data3[*recv_index3], 1);
-    }
-    else if(handler->Instance == UART4){
-        *recv_index4 *= ++(*recv_index4) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE;
-        HAL_UART_Receive_IT(handler, &recv_data4[*recv_index4], 1);
-    }
-    else if(handler->Instance == UART5){
-        *recv_index5 *= ++(*recv_index5) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE;
-        HAL_UART_Receive_IT(handler, &recv_data5[*recv_index5], 1);
-    }
-    else if(handler->Instance == USART6){
-        *recv_index6 *= ++(*recv_index6) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE;
-        HAL_UART_Receive_IT(handler, &recv_data6[*recv_index6], 1);
-    }
+    int index;
+    if(handler->Instance == USART1)      index = 0;
+    else if(handler->Instance == USART2) index = 1;
+    else if(handler->Instance == USART3) index = 2;
+    else if(handler->Instance == UART4)  index = 3;
+    else if(handler->Instance == UART5)  index = 4;
+    else if(handler->Instance == USART6) index = 5;
+    *uart_recv[index].index *= ++(*uart_recv[index].index) < MiYALAB::STM32::Serial::SERIAL_RECV_BUFF_SIZE; // recv_indexを増加させたときにSERIAL_RECV_BUFF_SIZE以上なら0にする
+    HAL_UART_Receive_IT(handler, &uart_recv[index].data[*uart_recv[index].index], 1);
 }
 
 //------------------------------------------------------------------------------
