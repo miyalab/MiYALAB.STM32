@@ -38,7 +38,25 @@
 namespace MiYALAB{
 namespace STM32{
 namespace ADConverter{
+ADCMode::ADCMode()
+{
+    
+}
 
+ADCMode::~ADCMode()
+{
+
+}
+
+bool ADCMode::enable(const uint16_t &use_channel)
+{
+    
+}
+
+int16_t ADCMode::read(const uint16_t channel)
+{
+
+}
 }
 }
 }
