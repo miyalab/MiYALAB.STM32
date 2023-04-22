@@ -21,31 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * File   : Uart.hpp
+ * File   : Adc.hpp
  * Author : K.Miyauchi
  *
  * Version : 2.00
  */
 
-#ifndef __MiYALAB_STM32_F446RE_USART_UART_HPP__
-#define __MiYALAB_STM32_F446RE_USART_UART_HPP__
+#ifndef __MiYALAB_STM32_F446RE_ADC_ADC_HPP__
+#define __MiYALAB_STM32_F446RE_ADC_ADC_HPP__
 
 //--------------------------
 // include
 //--------------------------
 #include "stm32f4xx.h"
-#include "stm32f4xx_hal_uart.h"
+#include "stm32f4xx_hal_adc.h"
 
 //--------------------------
-// function prototype
+// Symbols
 //--------------------------
-extern "C" {
-void USART1_IRQHandler();
-void USART2_IRQHandler();
-void USART3_IRQHandler();
-void UART4_IRQHandler();
-void UART5_IRQHandler();
-void USART6_IRQHandler();
+namespace MiYALAB{
+namespace STM32{
+namespace ADConverter{
+constexpr uint16_t IN_01 = 0x01;
+constexpr uint16_t IN_02 = 0x01 << 1;
+constexpr uint16_t IN_03 = 0x01 << 2;
+constexpr uint16_t IN_04 = 0x01 << 3;
+constexpr uint16_t IN_05 = 0x01 << 4;
+constexpr uint16_t IN_06 = 0x01 << 5;
+constexpr uint16_t IN_07 = 0x01 << 6;
+constexpr uint16_t IN_08 = 0x01 << 7;
+constexpr uint16_t IN_09 = 0x01 << 8;
+constexpr uint16_t IN_10 = 0x01 << 9;
+constexpr uint16_t IN_11 = 0x01 << 10;
+constexpr uint16_t IN_12 = 0x01 << 11;
+constexpr uint16_t IN_13 = 0x01 << 12;
+constexpr uint16_t IN_14 = 0x01 << 13;
+constexpr uint16_t IN_15 = 0x01 << 14;
+}
+}
 }
 
 //--------------------------
@@ -53,35 +66,23 @@ void USART6_IRQHandler();
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-namespace USART{
-class UartMode{
+namespace ADconverter{
+class ADCMode{
 public:
-	UartMode(USART_TypeDef *instance);
-	virtual ~UartMode();
-	bool enable(const uint32_t &baudrate, const uint32_t &length = UART_WORDLENGTH_8B, const uint32_t &stopbits = UART_STOPBITS_1, const uint32_t parity = UART_PARITY_NONE);
-    bool disable(){return HAL_UART_DeInit(&this->handler) == HAL_OK;}
-    int16_t available();
-    int16_t read();
-    template<typename T> size_t print(const T &data);
-    template<typename T> size_t print(const T *data);
-    template<typename T> size_t println(const T data){size_t length = this->print(data); this->transmit((uint8_t*)"\n", 1); return length+1;}
-    template<typename T> size_t write(const T &data);
-    template<typename T> size_t write(const T *data){return this->print(data);}
-
-private:
-	UART_HandleTypeDef handler;
-    int16_t recv_index;
-    int16_t read_index;
-    uint8_t *recv_data;
-    bool gpioInit();
-    bool receive(uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Receive(&this->handler, str, size, timeout)==HAL_OK);}
-    bool transmit(const uint8_t *str, const uint16_t &size, const uint16_t &timeout = 0xff) {return (HAL_UART_Transmit(&this->handler, str, size, timeout)==HAL_OK);}
+	ADCMode();
+	virtual ~ADCMode();
+	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
+	bool disable();
+	int16_t read(uint16_t channel);
+protected:
+	TIM_HandleTypeDef handler;
+	virtual bool initGpio(const uint8_t &channel);
 };
 }
 }
 }
 
-#endif // __MiYALAB_STM32_F446RE_USART_UART_HPP__
+#endif // __MiYALAB_STM32_F446RE_ADC_ADC_HPP__
 
 //------------------------------------------------------------------------------
 // end of file
