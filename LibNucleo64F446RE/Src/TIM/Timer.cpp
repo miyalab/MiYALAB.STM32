@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * File   : Pwm.cpp
+ * File   : Timer.cpp
  * Author : K.Miyauchi
  *
  * Version : 1.00

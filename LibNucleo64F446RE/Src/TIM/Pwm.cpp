@@ -99,7 +99,7 @@ bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8
         break_dead_time_config.BreakState = TIM_BREAK_DISABLE;
         break_dead_time_config.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
         break_dead_time_config.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-        if (HAL_TIMEx_ConfigBreakDeadTime(&this->handler, &break_dead_time_config) != HAL_OK) return HAL_ERROR;
+        if (HAL_TIMEx_ConfigBreakDeadTime(&this->handler, &break_dead_time_config) != HAL_OK) return false;
     }
 
     // GPIO設定
