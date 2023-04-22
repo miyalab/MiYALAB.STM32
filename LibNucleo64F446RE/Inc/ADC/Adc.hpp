@@ -42,21 +42,21 @@
 namespace MiYALAB{
 namespace STM32{
 namespace ADConverter{
-constexpr uint16_t IN_01 = 0x01;
-constexpr uint16_t IN_02 = 0x01 << 1;
-constexpr uint16_t IN_03 = 0x01 << 2;
-constexpr uint16_t IN_04 = 0x01 << 3;
-constexpr uint16_t IN_05 = 0x01 << 4;
-constexpr uint16_t IN_06 = 0x01 << 5;
-constexpr uint16_t IN_07 = 0x01 << 6;
-constexpr uint16_t IN_08 = 0x01 << 7;
-constexpr uint16_t IN_09 = 0x01 << 8;
-constexpr uint16_t IN_10 = 0x01 << 9;
-constexpr uint16_t IN_11 = 0x01 << 10;
-constexpr uint16_t IN_12 = 0x01 << 11;
-constexpr uint16_t IN_13 = 0x01 << 12;
-constexpr uint16_t IN_14 = 0x01 << 13;
-constexpr uint16_t IN_15 = 0x01 << 14;
+constexpr uint16_t IN_01 = 0x0001;
+constexpr uint16_t IN_02 = 0x0001 << 1;
+constexpr uint16_t IN_03 = 0x0001 << 2;
+constexpr uint16_t IN_04 = 0x0001 << 3;
+constexpr uint16_t IN_05 = 0x0001 << 4;
+constexpr uint16_t IN_06 = 0x0001 << 5;
+constexpr uint16_t IN_07 = 0x0001 << 6;
+constexpr uint16_t IN_08 = 0x0001 << 7;
+constexpr uint16_t IN_09 = 0x0001 << 8;
+constexpr uint16_t IN_10 = 0x0001 << 9;
+constexpr uint16_t IN_11 = 0x0001 << 10;
+constexpr uint16_t IN_12 = 0x0001 << 11;
+constexpr uint16_t IN_13 = 0x0001 << 12;
+constexpr uint16_t IN_14 = 0x0001 << 13;
+constexpr uint16_t IN_15 = 0x0001 << 14;
 }
 }
 }
@@ -66,17 +66,17 @@ constexpr uint16_t IN_15 = 0x01 << 14;
 //--------------------------
 namespace MiYALAB{
 namespace STM32{
-namespace ADconverter{
+namespace ADConverter{
 class ADCMode{
 public:
 	ADCMode();
 	virtual ~ADCMode();
-	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel);
+	bool enable(const uint16_t &use_channel);
 	bool disable();
 	int16_t read(uint16_t channel);
 protected:
-	TIM_HandleTypeDef handler;
-	virtual bool initGpio(const uint8_t &channel);
+	ADC_HandleTypeDef handler;
+	bool initGpio(const uint8_t &channel);
 };
 }
 }
