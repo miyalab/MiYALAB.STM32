@@ -78,7 +78,7 @@ public:
 	virtual ~ADCMode();
 	bool enable(const uint16_t &use_channel, const uint32_t &resolution = ADC_RESOLUTION_12B);
 	bool disable();
-	int16_t read(uint16_t channel);
+	int16_t read(const uint16_t &channel);
 protected:
 	ADC_HandleTypeDef handler;
 	bool initGpio(const uint16_t &channel);
