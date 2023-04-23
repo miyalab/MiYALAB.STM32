@@ -93,14 +93,13 @@ bool Module::initGpio(const uint8_t &channel)
 
     if(this->handler.Instance == TIM1){
         gpio_config.Alternate = GPIO_AF1_TIM1;
-        gpio_config.Pin  = GPIO_PIN_8  *  (channel & TIM::CHANNEL_1);
-        gpio_config.Pin |= GPIO_PIN_9  * ((channel & TIM::CHANNEL_2) != 0);
-        gpio_config.Pin |= GPIO_PIN_10 * ((channel & TIM::CHANNEL_3) != 0);
-        gpio_config.Pin |= GPIO_PIN_11 * ((channel & TIM::CHANNEL_4) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOA, &gpio_config);
-        }
+        gpio_config.Pin = (channel & 0x0f) << 8;
+        // gpio_config.Pin  = GPIO_PIN_8  *  (channel & TIM::CHANNEL_1);
+        // gpio_config.Pin |= GPIO_PIN_9  * ((channel & TIM::CHANNEL_2) != 0);
+        // gpio_config.Pin |= GPIO_PIN_10 * ((channel & TIM::CHANNEL_3) != 0);
+        // gpio_config.Pin |= GPIO_PIN_11 * ((channel & TIM::CHANNEL_4) != 0);
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOA, &gpio_config);
     }
     else if(this->handler.Instance == TIM2){
         gpio_config.Alternate = GPIO_AF1_TIM2;
@@ -124,52 +123,46 @@ bool Module::initGpio(const uint8_t &channel)
         gpio_config.Pin |= GPIO_PIN_5 * ((channel & TIM::CHANNEL_2) != 0);
         gpio_config.Pin |= GPIO_PIN_0 * ((channel & TIM::CHANNEL_3) != 0);
         gpio_config.Pin |= GPIO_PIN_1 * ((channel & TIM::CHANNEL_4) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOB, &gpio_config);
-        }
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOB, &gpio_config);
     }
     else if(this->handler.Instance == TIM4){
         gpio_config.Alternate = GPIO_AF2_TIM4;
-        gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
-        gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
-        gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
-        gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOB, &gpio_config);
-        }
+        gpio_config.Pin = (channel & 0x0f) << 6;
+        // gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
+        // gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
+        // gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
+        // gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOB, &gpio_config);
     }
     else if(this->handler.Instance == TIM5){
         gpio_config.Alternate = GPIO_AF2_TIM5;
-        gpio_config.Pin  = GPIO_PIN_0 *  (channel & TIM::CHANNEL_1);
-        gpio_config.Pin |= GPIO_PIN_1 * ((channel & TIM::CHANNEL_2) != 0);
-        gpio_config.Pin |= GPIO_PIN_2 * ((channel & TIM::CHANNEL_3) != 0);
-        gpio_config.Pin |= GPIO_PIN_3 * ((channel & TIM::CHANNEL_4) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOA, &gpio_config);
-        }
+        gpio_config.Pin = channel & 0x0f;
+        // gpio_config.Pin  = GPIO_PIN_0 *  (channel & TIM::CHANNEL_1);
+        // gpio_config.Pin |= GPIO_PIN_1 * ((channel & TIM::CHANNEL_2) != 0);
+        // gpio_config.Pin |= GPIO_PIN_2 * ((channel & TIM::CHANNEL_3) != 0);
+        // gpio_config.Pin |= GPIO_PIN_3 * ((channel & TIM::CHANNEL_4) != 0);
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOA, &gpio_config);
     }
     else if(this->handler.Instance == TIM8){
         gpio_config.Alternate = GPIO_AF3_TIM8;
-        gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
-        gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
-        gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
-        gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOC_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOC, &gpio_config);
-        }
+        gpio_config.Pin = (channel & 0x0f) << 6;
+        // gpio_config.Pin  = GPIO_PIN_6 *  (channel & TIM::CHANNEL_1);
+        // gpio_config.Pin |= GPIO_PIN_7 * ((channel & TIM::CHANNEL_2) != 0);
+        // gpio_config.Pin |= GPIO_PIN_8 * ((channel & TIM::CHANNEL_3) != 0);
+        // gpio_config.Pin |= GPIO_PIN_9 * ((channel & TIM::CHANNEL_4) != 0);
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOC, &gpio_config);
     }
     else if(this->handler.Instance == TIM12){
         gpio_config.Alternate = GPIO_AF9_TIM12;
-        gpio_config.Pin  = GPIO_PIN_14 *  (channel & TIM::CHANNEL_1);
-        gpio_config.Pin |= GPIO_PIN_15 * ((channel & TIM::CHANNEL_2) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-            HAL_GPIO_Init(GPIOB, &gpio_config);
-        }
+        gpio_config.Pin = (channel & 0x03) << 14;
+        // gpio_config.Pin  = GPIO_PIN_14 *  (channel & TIM::CHANNEL_1);
+        // gpio_config.Pin |= GPIO_PIN_15 * ((channel & TIM::CHANNEL_2) != 0);
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOB, &gpio_config);
     }
     else return false;
     return true;
