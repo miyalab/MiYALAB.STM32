@@ -70,12 +70,12 @@ bool ADCMode::enable(const uint16_t &use_channel, const uint32_t &resolution)
 
 int16_t ADCMode::read(const uint16_t &channel)
 {
-    int16_t ret;
-
+    // ADC設定
     ADC_ChannelConfTypeDef config = {0};
     config.Rank = 1;
     config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
 
+    // ADCチャンネル設定
     constexpr uint32_t ADC_CHANNELS[] = {
         ADC_CHANNEL_0,  ADC_CHANNEL_1,  ADC_CHANNEL_2,  ADC_CHANNEL_3,  ADC_CHANNEL_4, 
         ADC_CHANNEL_5,  ADC_CHANNEL_6,  ADC_CHANNEL_7,  ADC_CHANNEL_8,  ADC_CHANNEL_9,
@@ -88,6 +88,7 @@ int16_t ADCMode::read(const uint16_t &channel)
     config.Channel = ADC_CHANNELS[shift-1];
 
     // ADC読み込み
+    int16_t ret;
     if(HAL_ADC_ConfigChannel(&this->handler, &config) != HAL_OK) return -1;
     if(HAL_ADC_Start(&this->handler) != HAL_OK) return -1;
     if(HAL_ADC_PollForConversion(&this->handler, 10) != HAL_OK) return -1;
