@@ -77,7 +77,7 @@ public:
 	ADCMode();
 	virtual ~ADCMode();
 	bool enable(const uint16_t &use_channel, const uint32_t &resolution = ADC_RESOLUTION_12B);
-	bool disable();
+	bool disable(){return (HAL_ADC_Stop(&this->handler) == HAL_OK) && (HAL_ADC_DeInit(&this->handler) == HAL_OK);}
 	int16_t read(const uint16_t &channel);
 protected:
 	ADC_HandleTypeDef handler;

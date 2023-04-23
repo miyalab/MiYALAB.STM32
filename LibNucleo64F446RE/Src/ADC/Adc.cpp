@@ -46,7 +46,8 @@ ADCMode::ADCMode()
 
 ADCMode::~ADCMode()
 {
-
+    this->disable();
+    __HAL_RCC_ADC1_CLK_DISABLE();
 }
 
 bool ADCMode::enable(const uint16_t &use_channel, const uint32_t &resolution)
@@ -75,14 +76,18 @@ int16_t ADCMode::read(const uint16_t &channel)
     config.Rank = 1;
     config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
 
-    static constexpr uint32_t ADC_CHANNELS[] = {
+    constexpr uint32_t ADC_CHANNELS[] = {
         ADC_CHANNEL_0,  ADC_CHANNEL_1,  ADC_CHANNEL_2,  ADC_CHANNEL_3,  ADC_CHANNEL_4, 
         ADC_CHANNEL_5,  ADC_CHANNEL_6,  ADC_CHANNEL_7,  ADC_CHANNEL_8,  ADC_CHANNEL_9,
         ADC_CHANNEL_10, ADC_CHANNEL_11, ADC_CHANNEL_12, ADC_CHANNEL_13, ADC_CHANNEL_14,
         ADC_CHANNEL_15
-        
     };
+    int16_t shift=0;
+    for(uint16_t bits=channel; bits; bits>>=1, shift++);
+    if(shift==0 || shift>16) return -1;
+    config.Channel = ADC_CHANNELS[shift-1];
 
+    // ADC読み込み
     if(HAL_ADC_ConfigChannel(&this->handler, &config) != HAL_OK) return -1;
     if(HAL_ADC_Start(&this->handler) != HAL_OK) return -1;
     if(HAL_ADC_PollForConversion(&this->handler, 10) != HAL_OK) return -1;
@@ -96,6 +101,7 @@ int16_t ADCMode::read(const uint16_t &channel)
 
 bool ADCMode::initGpio(const uint16_t &channel)
 {
+    // GPIO設定
     GPIO_InitTypeDef gpio_config = {0};
     gpio_config.Mode = GPIO_MODE_ANALOG;
     gpio_config.Pull = GPIO_NOPULL;
