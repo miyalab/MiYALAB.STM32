@@ -67,9 +67,31 @@ bool ADCMode::enable(const uint16_t &use_channel, const uint32_t &resolution)
     if(!this->initGpio(use_channel)) return false;
 }
 
-int16_t ADCMode::read(const uint16_t channel)
+int16_t ADCMode::read(const uint16_t &channel)
 {
+    int16_t ret;
 
+    ADC_ChannelConfTypeDef config = {0};
+    config.Rank = 1;
+    config.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+
+    static constexpr uint32_t ADC_CHANNELS[] = {
+        ADC_CHANNEL_0,  ADC_CHANNEL_1,  ADC_CHANNEL_2,  ADC_CHANNEL_3,  ADC_CHANNEL_4, 
+        ADC_CHANNEL_5,  ADC_CHANNEL_6,  ADC_CHANNEL_7,  ADC_CHANNEL_8,  ADC_CHANNEL_9,
+        ADC_CHANNEL_10, ADC_CHANNEL_11, ADC_CHANNEL_12, ADC_CHANNEL_13, ADC_CHANNEL_14,
+        ADC_CHANNEL_15
+        
+    };
+
+    if(HAL_ADC_ConfigChannel(&this->handler, &config) != HAL_OK) return -1;
+    if(HAL_ADC_Start(&this->handler) != HAL_OK) return -1;
+    if(HAL_ADC_PollForConversion(&this->handler, 10) != HAL_OK) return -1;
+    if(HAL_ADC_GetState(&this->handler) & HAL_ADC_STATE_REG_EOC){
+        ret = HAL_ADC_GetValue(&this->handler);
+    }
+    if(HAL_ADC_Stop(&this->handler) != HAL_OK) return -1;
+
+    return ret;
 }
 
 bool ADCMode::initGpio(const uint16_t &channel)
@@ -78,28 +100,25 @@ bool ADCMode::initGpio(const uint16_t &channel)
     gpio_config.Mode = GPIO_MODE_ANALOG;
     gpio_config.Pull = GPIO_NOPULL;
 
-    if(channel & ADConverter::IN_00_07){
-        gpio_config.Pin =  GPIO_PIN_0 *  (channel & ADConverter::IN_00);
-        gpio_config.Pin |= GPIO_PIN_1 * ((channel & ADConverter::IN_01) != 0);
-        gpio_config.Pin |= GPIO_PIN_2 * ((channel & ADConverter::IN_02) != 0);
-        gpio_config.Pin |= GPIO_PIN_3 * ((channel & ADConverter::IN_03) != 0);
-        gpio_config.Pin |= GPIO_PIN_4 * ((channel & ADConverter::IN_04) != 0);
-        gpio_config.Pin |= GPIO_PIN_5 * ((channel & ADConverter::IN_05) != 0);
-        gpio_config.Pin |= GPIO_PIN_6 * ((channel & ADConverter::IN_06) != 0);
-        gpio_config.Pin |= GPIO_PIN_7 * ((channel & ADConverter::IN_07) != 0);
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-        }
+    if(gpio_config.Pin = channel & ADConverter::IN_00_07){
+        // gpio_config.Pin =  GPIO_PIN_0 *  (channel & ADConverter::IN_00);
+        // gpio_config.Pin |= GPIO_PIN_1 * ((channel & ADConverter::IN_01) != 0);
+        // gpio_config.Pin |= GPIO_PIN_2 * ((channel & ADConverter::IN_02) != 0);
+        // gpio_config.Pin |= GPIO_PIN_3 * ((channel & ADConverter::IN_03) != 0);
+        // gpio_config.Pin |= GPIO_PIN_4 * ((channel & ADConverter::IN_04) != 0);
+        // gpio_config.Pin |= GPIO_PIN_5 * ((channel & ADConverter::IN_05) != 0);
+        // gpio_config.Pin |= GPIO_PIN_6 * ((channel & ADConverter::IN_06) != 0);
+        // gpio_config.Pin |= GPIO_PIN_7 * ((channel & ADConverter::IN_07) != 0);
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOA, &gpio_config);
     }
-    if(channel & ADConverter::IN_08_09){
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-        }
+    if(gpio_config.Pin = (channel & ADConverter::IN_08_09) >> 8){
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOB, &gpio_config);
     }
-    if(channel & ADConverter::IN_10_15){
-        if(gpio_config.Pin){
-            __HAL_RCC_GPIOC_CLK_ENABLE();
-        }
+    if(gpio_config.Pin = (channel & ADConverter::IN_10_15) >> 10){
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        HAL_GPIO_Init(GPIOC, &gpio_config);
     }
     return true;
 }
