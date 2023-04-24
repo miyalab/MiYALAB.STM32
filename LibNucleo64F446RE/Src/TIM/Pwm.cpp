@@ -73,7 +73,7 @@ PwmMode::~PwmMode()
  * @return true 
  * @return false 
  */
-bool PwmMode::enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel)
+bool PwmMode::enable(const uint8_t &use_channel, const uint16_t &divide, const uint16_t &period)
 {
     // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;

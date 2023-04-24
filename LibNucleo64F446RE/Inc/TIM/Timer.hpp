@@ -53,7 +53,7 @@ class TimerMode: public TIM::Module{
 public:
 	TimerMode(TIM_TypeDef *instance);
 	virtual ~TimerMode();
-	bool enable(const uint16_t &divide, const uint16_t &period, void(*function)(void));
+	bool enable(void(*function)(void), const uint16_t &divide, const uint16_t &period);
 	bool disable() override {return HAL_TIM_Base_Stop_IT(&this->handler) == HAL_OK && HAL_TIM_Base_DeInit(&this->handler) == HAL_OK;}
 };
 }

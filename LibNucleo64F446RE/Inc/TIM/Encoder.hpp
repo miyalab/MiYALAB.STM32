@@ -45,7 +45,7 @@ class EncoderMode: public TIM::Module{
 public:
 	EncoderMode(TIM_TypeDef *instance);
 	virtual ~EncoderMode();
-	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel) override;
+	bool enable(const uint8_t &use_channel, const uint16_t &divide, const uint16_t &period) override;
 	bool disable() override {return HAL_TIM_Encoder_Stop(&this->handler, TIM_CHANNEL_ALL) == HAL_OK && HAL_TIM_Encoder_DeInit(&this->handler) == HAL_OK;}
 
     void clear(){this->handler.Instance->CNT = TIM::ENCODER_CENTER;}

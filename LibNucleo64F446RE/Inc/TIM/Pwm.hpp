@@ -45,7 +45,7 @@ class PwmMode: public TIM::Module{
 public:
 	PwmMode(TIM_TypeDef *instance);
 	virtual ~PwmMode();
-	bool enable(const uint16_t &divide, const uint16_t &period, const uint8_t &use_channel) override;
+	bool enable(const uint8_t &use_channel, const uint16_t &divide, const uint16_t &period) override;
 	bool disable() override {return HAL_TIM_PWM_Stop(&this->handler, TIM_CHANNEL_ALL) == HAL_OK && HAL_TIM_PWM_DeInit(&this->handler) == HAL_OK;}
 
 	void pwmOut1(const uint16_t &duty) {this->handler.Instance->CCR1 = duty;}

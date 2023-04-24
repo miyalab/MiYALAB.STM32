@@ -86,7 +86,7 @@ TimerMode::~TimerMode()
     }
 }
 
-bool TimerMode::enable(const uint16_t &divide, const uint16_t &period, void(*function)(void))
+bool TimerMode::enable(void(*function)(void), const uint16_t &divide, const uint16_t &period)
 {
     // TIMレジスタ設定
     this->handler.Init.Prescaler = divide - 1;
