@@ -51,7 +51,7 @@ namespace TIM{
  */
 EncoderMode::EncoderMode(TIM_TypeDef *instance) : TIM::Module(instance)
 {
-
+    
 }
 
 /**
