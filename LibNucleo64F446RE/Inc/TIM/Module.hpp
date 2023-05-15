@@ -68,7 +68,7 @@ public:
 	virtual bool disable(){return false;}
 protected:
 	TIM_HandleTypeDef handler;
-	virtual bool initGpio(const uint8_t &channel);
+	static bool initGpio(TIM_TypeDef *instance, const uint8_t &channel);
 };
 }
 }

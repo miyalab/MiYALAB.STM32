@@ -85,7 +85,8 @@ bool EncoderMode::enable(const uint8_t &use_channel, const uint16_t &divide, con
 
     // TIM エンコーダ設定
     TIM_Encoder_InitTypeDef config = {0};
-    config.EncoderMode = (use_channel & TIM::CHANNEL_1) * TIM_ENCODERMODE_TI1 | (use_channel & TIM::CHANNEL_2) * TIM_ENCODERMODE_TI2;
+    config.EncoderMode = ((use_channel & TIM::CHANNEL_1) != 0) * TIM_ENCODERMODE_TI1
+    				   | ((use_channel & TIM::CHANNEL_2) != 0) * TIM_ENCODERMODE_TI2;
     config.IC1Polarity = TIM_ICPOLARITY_RISING;
     config.IC1Selection = TIM_ICSELECTION_DIRECTTI;
     config.IC1Prescaler = TIM_ICPSC_DIV1;
@@ -102,7 +103,7 @@ bool EncoderMode::enable(const uint8_t &use_channel, const uint16_t &divide, con
     if(HAL_TIMEx_MasterConfigSynchronization(&this->handler, &master_config) != HAL_OK) return false;
 
     // GPIO 設定
-    if(this->initGpio(use_channel)) return false;
+    if(this->initGpio(this->handler.Instance, use_channel)) return false;
     
     // カウント開始
     if(use_channel & TIM::CHANNEL_1) HAL_TIM_Encoder_Start(&this->handler, TIM_CHANNEL_1);
