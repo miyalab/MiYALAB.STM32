@@ -24,7 +24,7 @@
  * File   : Encoder.hpp
  * Author : K.Miyauchi
  *
- * Version : 2.00
+ * Version : 2.01
  */
 
 #ifndef __MiYALAB_STM32_F446RE_TIM_ENCODER_HPP__
