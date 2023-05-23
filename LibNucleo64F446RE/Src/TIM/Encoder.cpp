@@ -103,7 +103,7 @@ bool EncoderMode::enable(const uint8_t &use_channel, const uint16_t &divide, con
     if(HAL_TIMEx_MasterConfigSynchronization(&this->handler, &master_config) != HAL_OK) return false;
 
     // GPIO 設定
-    if(this->initGpio(this->handler.Instance, use_channel)) return false;
+    if(!this->initGpio(this->handler.Instance, use_channel)) return false;
     
     // カウント開始
     if(use_channel & TIM::CHANNEL_1) HAL_TIM_Encoder_Start(&this->handler, TIM_CHANNEL_1);
