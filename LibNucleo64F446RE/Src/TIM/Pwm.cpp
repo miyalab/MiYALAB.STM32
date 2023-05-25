@@ -103,7 +103,7 @@ bool PwmMode::enable(const uint8_t &use_channel, const uint16_t &divide, const u
     }
 
     // GPIO設定
-    if(!this->initGpio(use_channel)) return false;
+    if(!this->initGpio(this->handler.Instance, use_channel)) return false;
 
     // TIMチャンネル設定
     TIM_OC_InitTypeDef oc_config = {0};

@@ -86,6 +86,15 @@ TimerMode::~TimerMode()
     }
 }
 
+/**
+ * @brief 
+ * 
+ * @param function 
+ * @param divide 
+ * @param period 
+ * @return true 
+ * @return false 
+ */
 bool TimerMode::enable(void(*function)(void), const uint16_t &divide, const uint16_t &period)
 {
     // TIMレジスタ設定
