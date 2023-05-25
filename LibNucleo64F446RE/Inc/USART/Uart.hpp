@@ -64,7 +64,8 @@ public:
     int16_t read();
     template<typename T> size_t print(const T &data);
     template<typename T> size_t print(const T *data);
-    template<typename T> size_t println(const T data){size_t length = this->print(data); this->transmit((uint8_t*)"\n", 1); return length+1;}
+    template<typename T> size_t println(const T &data){size_t length = this->print(data); this->transmit((uint8_t*)"\n", 1); return length+1;}
+    template<typename T> size_t println(const T *data){size_t length = this->print(data); this->transmit((uint8_t*)"\n", 1); return length+1;}
     template<typename T> size_t write(const T &data);
     template<typename T> size_t write(const T *data){return this->print(data);}
 

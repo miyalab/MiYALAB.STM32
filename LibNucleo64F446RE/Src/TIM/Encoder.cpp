@@ -85,6 +85,7 @@ bool EncoderMode::enable(const uint8_t &use_channel, const uint16_t &divide, con
 
     // TIM エンコーダ設定
     TIM_Encoder_InitTypeDef config = {0};
+    TIM_ENCODERMODE_TI12;
     config.EncoderMode = (use_channel & TIM::CHANNEL_1) * TIM_ENCODERMODE_TI1 | (use_channel & TIM::CHANNEL_2) * TIM_ENCODERMODE_TI2;
     config.IC1Polarity = TIM_ICPOLARITY_RISING;
     config.IC1Selection = TIM_ICSELECTION_DIRECTTI;
