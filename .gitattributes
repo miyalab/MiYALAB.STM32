@@ -1,0 +1,2 @@
+# 他者のライブラリを統計情報から除外
+LibNucleo64F446RE/Drivers/* linguist-vendored
